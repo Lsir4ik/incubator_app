@@ -11,5 +11,8 @@ app.use(cors()); // разрешить любым фронтам делать з
 app.use(express.json()); // создание свойств-объектов body и query во всех реквестах
 
 // Routes
+app.get("/", (req: Request, res: Response) => {
+    res.send("HW1")
+})
 app.use(SETTINGS.PATH.VIDEOS, videosRouter);
 app.delete(SETTINGS.PATH.TESTING,testingRouter);
