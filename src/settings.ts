@@ -1,7 +1,7 @@
 import {config} from 'dotenv';
 import {Request} from 'express';
 
-config()
+config();
 
 export const SETTINGS = {
     PORT: process.env.PORT || 3000, // TODO наполнение файла .env
