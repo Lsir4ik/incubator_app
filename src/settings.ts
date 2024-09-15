@@ -4,7 +4,7 @@ import {Request} from 'express';
 config();
 
 export const SETTINGS = {
-    PORT: process.env.PORT || 3000,
+    PORT: process.env.PORT || 3000, // TODO добавил .env в .gitignore - все равно запушилось в github
     PATH: {
         VIDEOS: '/videos',
         TESTING: '/testing/all-data'
@@ -22,12 +22,12 @@ export enum HTTPStatusCodesEnum {
 }
 
 export enum Resolutions {
-    P144,
-    P240,
-    P360,
-    P480,
-    P720,
-    P1080,
-    P1440,
-    P2160
+    P144 = 'P144',
+    P240 = 'P240',
+    P360 = 'P360',
+    P480 = 'P480',
+    P720 = 'P720',
+    P1080 = 'P1080',
+    P1440 = 'P1440',
+    P2160 = 'P2160',
 }

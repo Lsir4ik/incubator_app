@@ -1,4 +1,4 @@
-import {Resolutions} from "../settings";
+import {Resolutions} from "../../settings";
 
 export interface VideoViewModel {
     id: string,

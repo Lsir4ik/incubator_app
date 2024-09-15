@@ -1,7 +1,7 @@
-import {VideoViewModel} from "../../models/VideoViewModel";
+import {VideoViewModel} from "../../models/video/VideoViewModel";
 import {Resolutions} from "../../settings";
-import {CreateVideoInputModel} from "../../models/CreateVideoInputModel";
-import {UpdateVideoInputModel} from "../../models/UpdateVideoInputModel";
+import {CreateVideoInputModel} from "../../models/video/CreateVideoInputModel";
+import {UpdateVideoInputModel} from "../../models/video/UpdateVideoInputModel";
 
 let videos: Array<VideoViewModel> = [
     {
@@ -52,10 +52,10 @@ export const videosLocalRepository = {
             const indexOfFoundVideo = videos.findIndex(v => v.id === id);
             video.title = body.title;
             video.author = body.author;
-            video.availableResolutions = body.availableResolutions;
-            video.canBeDownloaded = body.canBeDownloaded;
-            video.minAgeRestriction = body.minAgeRestriction;
-            video.publicationDate = body.publicationDate;
+            video.availableResolutions = body.availableResolutions || video.availableResolutions;
+            video.canBeDownloaded = body.canBeDownloaded || false;
+            video.minAgeRestriction = body.minAgeRestriction || "no restriction";
+            video.publicationDate = body.publicationDate || new Date().toISOString();
 
             videos.splice(indexOfFoundVideo,1, video)
             return true;
