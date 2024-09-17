@@ -1,8 +1,7 @@
 import express, {Request, Response} from 'express'
 import cors from 'cors'
-import {videosRouter} from "./routes/videosRouter";
 import {HTTPStatusCodesEnum, SETTINGS} from "./settings";
-import {testingRouter} from "./routes/testingRouter";
+import {testingRouter} from "./routes/testing.router";
 
 export const app = express();
 
@@ -14,5 +13,4 @@ app.use(express.json()); // создание свойств-объектов bod
 app.get("/", (req: Request, res: Response) => {
     res.status(HTTPStatusCodesEnum.No_Content_204).send("HW1")
 })
-app.use(SETTINGS.PATH.VIDEOS, videosRouter);
 app.delete(SETTINGS.PATH.TESTING,testingRouter);
