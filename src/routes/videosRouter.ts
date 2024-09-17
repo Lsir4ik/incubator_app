@@ -26,7 +26,7 @@ videosRouter.post('/', (req: RequestWithBody<CreateVideoInputModel>, res: Respon
         res.status(HTTPStatusCodesEnum.Bad_Request_400).send(createVideoValidationErrors)
     }
     // Routing
-    const newVideo = videosLocalRepository.createVideo(req.body)
+    const newVideo = videosLocalRepository.createVideo(req.body) // TODO +1 день Publication уточнить при создании от createdDate через FNS
     res.status(HTTPStatusCodesEnum.Created_201).send(newVideo)
 })
 videosRouter.put('/:id', (req: RequestWithParamsAndBody<{id: string}, UpdateVideoInputModel>, res: Response<APIErrorResult>) => {

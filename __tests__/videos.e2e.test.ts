@@ -23,7 +23,7 @@ describe('/videos', () => {
         // POST
         const {createdEntity} = await videosTestManager.createVideo(newEntityData)
         // GET All
-        await videosTestManager.getAllVideos(1)
+        await videosTestManager.getAllVideos(1) // TODO exprect вынести в тест
     })
 
     it('PUT - "/videos/:id", should update video by id, status 204', async () => {
@@ -34,8 +34,8 @@ describe('/videos', () => {
             availableResolutions: [Resolutions.P144, Resolutions.P480]
         }
 
-        // Data for update video by id
-        const dataForUpdateEntity: UpdateVideoInputModel = {
+         // Data for update video by id
+       const dataForUpdateEntity: UpdateVideoInputModel = {
             title: "2nd video updated",
             author: "Pomodoro updated",
             availableResolutions: [Resolutions.P144, Resolutions.P1080],
@@ -56,6 +56,7 @@ describe('/videos', () => {
 
         // Get all videos (2)
         await videosTestManager.getAllVideos(2)
+
     })
 
     it('GET - "/videos", should return array of videos, status 200, content: array of videos', async () => {
