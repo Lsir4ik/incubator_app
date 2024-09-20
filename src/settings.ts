@@ -4,10 +4,12 @@ import {Request} from 'express';
 config();
 
 export const SETTINGS = {
-    PORT: process.env.PORT || 3000, // TODO добавил .env в .gitignore - все равно запушилось в github
+    PORT: process.env.PORT || 3000,
     PATH: {
         VIDEOS: '/videos',
-        TESTING: '/testing/all-data'
+        TESTING: '/ht_02/api/testing/all-data',
+        BLOGS: 'ht_2/api/blogs',
+        POSTS: 'ht_2/api/posts',
     }
 }
 

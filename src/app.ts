@@ -2,6 +2,8 @@ import express, {Request, Response} from 'express'
 import cors from 'cors'
 import {HTTPStatusCodesEnum, SETTINGS} from "./settings";
 import {testingRouter} from "./routes/testing.router";
+import {blogsRouter} from "./routes/blogs.router";
+import {postsRouter} from "./routes/posts.router";
 
 export const app = express();
 
@@ -13,4 +15,6 @@ app.use(express.json()); // создание свойств-объектов bod
 app.get("/", (req: Request, res: Response) => {
     res.status(HTTPStatusCodesEnum.No_Content_204).send("HW1")
 })
-app.delete(SETTINGS.PATH.TESTING,testingRouter);
+app.use(SETTINGS.PATH.TESTING,testingRouter);
+app.use(SETTINGS.PATH.BLOGS, blogsRouter);
+app.use(SETTINGS.PATH.POSTS, postsRouter);
