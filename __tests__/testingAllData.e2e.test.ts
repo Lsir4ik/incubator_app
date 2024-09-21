@@ -8,7 +8,8 @@ const req = agent(app)
 
 describe('/testing/all-data', () => {
     it('DELETE, should remove all data, status 204', async () => {
-        await req.delete(SETTINGS.PATH.TESTING)
+        await req
+            .delete(SETTINGS.PATH.TESTING)
             .expect(HTTPStatusCodesEnum.No_Content_204)
 
         const resBlogs = await blogsTestManager.getAllBlogs()

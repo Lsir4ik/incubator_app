@@ -5,7 +5,7 @@ import {postRepository} from "../repositories/Local/posts.memory.repository";
 
 export const testingRouter = Router()
 
-testingRouter.delete(SETTINGS.PATH.TESTING, (req: Request, res: Response) => {
+testingRouter.delete('/', (req: Request, res: Response) => {
     blogsRepository.deleteAllBlogs()
     postRepository.deleteAllPosts()
     res.sendStatus(HTTPStatusCodesEnum.No_Content_204);
