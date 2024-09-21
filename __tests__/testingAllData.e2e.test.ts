@@ -1,6 +1,8 @@
 import {agent} from "supertest";
 import {app} from "../src/app";
 import {HTTPStatusCodesEnum, SETTINGS} from "../src/settings";
+import {blogsTestManager} from "./blogs/blogs.test.helpers";
+import {postsTestManager} from "./posts/posts.test.helpers";
 
 const req = agent(app)
 
@@ -9,10 +11,10 @@ describe('/testing/all-data', () => {
         await req.delete(SETTINGS.PATH.TESTING)
             .expect(HTTPStatusCodesEnum.No_Content_204)
 
-        const resBlogs = await req.get(SETTINGS.PATH.BLOGS).expect(HTTPStatusCodesEnum.OK_200)
+        const resBlogs = await blogsTestManager.getAllBlogs()
         expect(resBlogs.body).toEqual(0);
 
-        const resPosts = await req.get(SETTINGS.PATH.POSTS).expect(HTTPStatusCodesEnum.OK_200)
+        const resPosts = await postsTestManager.getAllPosts()
         expect(resPosts.body).toEqual(0);
     })
 })
