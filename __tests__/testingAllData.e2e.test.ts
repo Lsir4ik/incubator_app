@@ -13,9 +13,9 @@ describe('/testing/all-data', () => {
             .expect(HTTPStatusCodesEnum.No_Content_204)
 
         const resBlogs = await blogsTestManager.getAllBlogs()
-        expect(resBlogs.body).toEqual(0);
+        expect(resBlogs.body.length).toEqual(0);
 
         const resPosts = await postsTestManager.getAllPosts()
-        expect(resPosts.body).toEqual(0);
+        expect(resPosts.body.length).toEqual(0);
     })
 })

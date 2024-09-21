@@ -2,9 +2,13 @@ import {agent} from "supertest";
 import {app} from "../../src/app";
 import {SETTINGS} from "../../src/settings";
 import {BlogInputModel} from "../../src/models/blogs/BlogInputModel";
-import {BlogViewModel} from "../../src/models/blogs/BlogViewModel";
+import {users} from "../../src/middlewares/authorization.middleware";
 
 const req = agent(app)
+
+let data = `${users[0].login}:${users[0].password}`
+let buff = Buffer.from(data)
+let codeAuth = buff.toString('base64')
 
 export const blogsTestManager = {
     async getAllBlogs() {
@@ -14,13 +18,13 @@ export const blogsTestManager = {
         return req.get(`${SETTINGS.PATH.BLOGS}/${id}`)
     },
     async createBlog(data: BlogInputModel) {
-        return req.get(SETTINGS.PATH.BLOGS).send(data)
+        return req.post(SETTINGS.PATH.BLOGS).set({'Authorization': 'Basic ' + codeAuth}).send(data)
     },
     async updateBlog(data: BlogInputModel, id: string) {
-        return req.get(`${SETTINGS.PATH.BLOGS}/${id}`).send(data)
+        return req.put(`${SETTINGS.PATH.BLOGS}/${id}`).set({'Authorization': 'Basic ' + codeAuth}).send(data)
     },
     async deleteBlogById(id: string) {
-        return req.delete(`${SETTINGS.PATH.BLOGS}/${id}`)
+        return req.delete(`${SETTINGS.PATH.BLOGS}/${id}`).set({'Authorization': 'Basic ' + codeAuth})
     },
     async deleteAllBlogs() {
         return req.delete(SETTINGS.PATH.BLOGS)

@@ -6,26 +6,26 @@ import {createBlogValidation, updateBlogValidation} from "../middlewares/validat
 
 export const blogsRouter = Router()
 
-blogsRouter.get(SETTINGS.PATH.BLOGS, (req: Request, res: Response) => {
+blogsRouter.get('/', (req: Request, res: Response) => {
     const blogs = blogsRepository.findAllBlogs()
     res.status(HTTPStatusCodesEnum.OK_200).send(blogs)
 })
-blogsRouter.post(SETTINGS.PATH.BLOGS, authMiddleware, createBlogValidation, (req: Request, res: Response) => {
+blogsRouter.post('/', authMiddleware, createBlogValidation, (req: Request, res: Response) => {
     const createdBlog = blogsRepository.createBlog(req.body);
     res.status(HTTPStatusCodesEnum.Created_201).send(createdBlog);
 });
-blogsRouter.get(SETTINGS.PATH.BLOGS, (req: Request, res: Response) => {
+blogsRouter.get('/:id', (req: Request, res: Response) => {
     const foundBlog = blogsRepository.findBlogById(req.params.id);
     if (foundBlog) return res.status(HTTPStatusCodesEnum.OK_200).send(foundBlog)
     return res.sendStatus(HTTPStatusCodesEnum.Not_Found_404);
 })
-blogsRouter.put(SETTINGS.PATH.BLOGS, authMiddleware, updateBlogValidation, (req: Request, res: Response) => {
+blogsRouter.put('/:id', authMiddleware, updateBlogValidation, (req: Request, res: Response) => {
     const isUpdated = blogsRepository.updateBlog(req.params.id, req.body);
-    if (isUpdated) return res.status(HTTPStatusCodesEnum.No_Content_204)
+    if (isUpdated) return res.sendStatus(HTTPStatusCodesEnum.No_Content_204)
     return response.sendStatus(HTTPStatusCodesEnum.Not_Found_404)
 })
-blogsRouter.delete(SETTINGS.PATH.BLOGS, (req: Request, res: Response) => {
+blogsRouter.delete('/:id', authMiddleware, (req: Request, res: Response) => {
     const isDeleted = blogsRepository.deleteBlogById(req.params.id);
-    if (isDeleted) return res.status(HTTPStatusCodesEnum.No_Content_204)
+    if (isDeleted) return res.sendStatus(HTTPStatusCodesEnum.No_Content_204)
     return res.sendStatus(HTTPStatusCodesEnum.Not_Found_404)
 });
