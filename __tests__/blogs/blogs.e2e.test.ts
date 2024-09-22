@@ -105,15 +105,73 @@ describe('/blogs', () => {
             .set({'Authorization': 'Basic uasdi1h3123'})
         expect(status3).toEqual(HTTPStatusCodesEnum.Unauthorized_401)
     })
-    it('POST, should not create a blog with validation error, status 400', async () => {
+    it('POST, PUT should not create a blog with validation error, status 400', async () => {
         // Incorrect name
-        const dataToCreateBlog: BlogInputModel = {
+        const dataToCreateOrUpdateBlog: BlogInputModel = {
             name: '4th blogdddddddddddddddddddddd',
-            description: '3rd description',
+            description: '4th description',
             webSiteUrl: 'http://localhost.3.ru',
         }
-        const {status, body} = await blogsTestManager.createBlog(dataToCreateBlog)
-        expect(status).toEqual(HTTPStatusCodesEnum.Bad_Request_400)
-        // expect(body).toEqual()
+        // POST
+        const {status: createdStatus, body} = await blogsTestManager.createBlog(dataToCreateOrUpdateBlog)
+        expect(createdStatus).toEqual(HTTPStatusCodesEnum.Bad_Request_400)
+        expect(body).toEqual(expect.any(Object)) // TODO Уточнить объект
+        // PUT
+        const {status:updatedStatus} = await blogsTestManager.updateBlog(dataToCreateOrUpdateBlog, body.id)
+        expect(updatedStatus).toEqual(HTTPStatusCodesEnum.Bad_Request_400)
+
+
+        // Incorrect description
+        const descriptionString500: string = '4th description'.repeat(500)
+        const dataToCreateOrUpdateBlog1: BlogInputModel = {
+            name: '4th blog',
+            description: descriptionString500,
+            webSiteUrl: 'http://localhost.3.ru',
+        }
+        // POST
+        const {status: createdStats1, body:body1} = await blogsTestManager.createBlog(dataToCreateOrUpdateBlog1)
+        expect(createdStats1).toEqual(HTTPStatusCodesEnum.Bad_Request_400)
+        expect(body1).toEqual(expect.any(Object)) // TODO Уточнить объект
+        // PUT
+        const {status:updatedStatus1} = await blogsTestManager.updateBlog(dataToCreateOrUpdateBlog1, body1.id)
+        expect(updatedStatus1).toEqual(HTTPStatusCodesEnum.Bad_Request_400)
+
+        // Incorrect webSiteUrl
+        const dataToCreateOrUpdateBlog2: BlogInputModel = {
+            name: '4th blog',
+            description: descriptionString500,
+            webSiteUrl: 'http//localhost',
+        }
+        // POST
+        const {status: createdStatus2, body:body2} = await blogsTestManager.createBlog(dataToCreateOrUpdateBlog2)
+        expect(createdStatus2).toEqual(HTTPStatusCodesEnum.Bad_Request_400)
+        expect(body2).toEqual(expect.any(Object)) // TODO Уточнить объект
+        // PUT
+        const {status:updatedStatus2} = await blogsTestManager.updateBlog(dataToCreateOrUpdateBlog2, body2.id)
+        expect(updatedStatus2).toEqual(HTTPStatusCodesEnum.Bad_Request_400)
+
     })
+    it('PUT, DELETE, GET, should return error if id was not found; status 404', async () => {
+        const dataToUpdateBlog: BlogInputModel = {
+            name: '4th blogdddd',
+            description: '4th description',
+            webSiteUrl: 'http://localhost.3.ru',
+        }
+        // PUT
+        const {status} = await blogsTestManager.updateBlog(dataToUpdateBlog, 'kjadfghlkjahfg')
+        expect(status).toEqual(HTTPStatusCodesEnum.Not_Found_404)
+
+        // DELETE
+        const {status: status1} = await blogsTestManager.deleteBlogById('fdgjhnerkjlng')
+        expect(status1).toEqual(HTTPStatusCodesEnum.Not_Found_404)
+
+        // GET
+        const {status: status2} = await blogsTestManager.getBlogById('sdfgsnbrthtyrhkm')
+        expect(status2).toEqual(HTTPStatusCodesEnum.Not_Found_404)
+    })
+    it('GET, should return all blogs in DB, status 200 ', async () => {
+        const {status, body:allBlogs} = await blogsTestManager.getAllBlogs()
+        expect(status).toEqual(HTTPStatusCodesEnum.OK_200)
+        expect(allBlogs).toEqual(expect.any(Array))
+    });
 })
