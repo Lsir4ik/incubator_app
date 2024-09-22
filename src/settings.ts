@@ -1,5 +1,4 @@
 import {config} from 'dotenv';
-import {Request} from 'express';
 
 config();
 

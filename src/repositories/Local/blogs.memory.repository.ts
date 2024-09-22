@@ -1,3 +1,4 @@
+/*
 import {BlogViewModel} from "../../models/blogs/BlogViewModel";
 import {BlogInputModel} from "../../models/blogs/BlogInputModel";
 
@@ -49,3 +50,5 @@ export const blogsRepository = {
         blogs = []
     }
 }
+
+ */

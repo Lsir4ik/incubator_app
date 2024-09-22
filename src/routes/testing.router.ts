@@ -1,12 +1,12 @@
 import {Request, Response, Router} from "express";
-import {HTTPStatusCodesEnum, SETTINGS} from "../settings";
-import {blogsRepository} from "../repositories/Local/blogs.memory.repository";
-import {postRepository} from "../repositories/Local/posts.memory.repository";
+import {HTTPStatusCodesEnum} from "../settings";
+import {blogsRepository} from "../repositories/Mongo/blogs.db.repository";
+import {postRepository} from "../repositories/Mongo/posts.db.repository";
 
 export const testingRouter = Router()
 
-testingRouter.delete('/', (req: Request, res: Response) => {
-    blogsRepository.deleteAllBlogs()
-    postRepository.deleteAllPosts()
+testingRouter.delete('/', async (req: Request, res: Response) => {
+    await blogsRepository.deleteAllBlogs()
+    await postRepository.deleteAllPosts()
     res.sendStatus(HTTPStatusCodesEnum.No_Content_204);
 })

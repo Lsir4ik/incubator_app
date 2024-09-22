@@ -4,6 +4,7 @@ import {HTTPStatusCodesEnum, SETTINGS} from "../../src/settings";
 import {agent} from "supertest";
 import {app} from "../../src/app";
 import {BlogViewModel} from "../../src/models/blogs/BlogViewModel";
+import {ObjectId} from "mongodb";
 
 const req = agent(app)
 
@@ -27,6 +28,8 @@ describe('/blogs', () => {
             name: '1st blog',
             description: '1st description',
             webSiteUrl: 'http://localhost.1.ru',
+            createdAt: expect.any(String),
+            isMembership: false
         })
 
         createdEntity = body
@@ -49,11 +52,19 @@ describe('/blogs', () => {
         // GET by id
         const {status: status1, body} = await blogsTestManager.getBlogById(createdEntity.id)
         expect(status1).toEqual(HTTPStatusCodesEnum.OK_200)
-        expect(body).toEqual({id: createdEntity.id, ...dataToUpdateBlog})
+        expect(body).toEqual({
+            _id: expect.any(String),
+            id: createdEntity.id,
+            name:'1st upd blog',
+            description: '1st updated description',
+            webSiteUrl: 'http://localhost.1.updated.ru',
+            createdAt: expect.any(String),
+            isMembership: false
+        })
     })
     it('DELETE, should delete a blog by id, status 204', async () => {
         const {status} = await blogsTestManager.deleteBlogById(createdEntity.id)
-        expect(status).toBe(HTTPStatusCodesEnum.No_Content_204)
+        expect(status).toEqual(HTTPStatusCodesEnum.No_Content_204)
 
         // GET
         const {status: status1, body} = await blogsTestManager.getBlogById(createdEntity.id)
@@ -71,7 +82,13 @@ describe('/blogs', () => {
         // GET
         const {status: status1, body: body1} = await blogsTestManager.getBlogById(body.id)
         expect(status1).toEqual(HTTPStatusCodesEnum.OK_200)
-        expect(body1).toEqual({id: body.id, ...dataToCreateBlog})
+        expect(body1).toEqual({
+            _id: expect.any(String),
+            id: body.id,
+            ...dataToCreateBlog,
+            createdAt: expect.any(String),
+            isMembership: false
+        })
     })
     it('POST,PUT,DELETE should not create/update/delete a blog with auth error, status 401', async () => {
         const dataToCreateBlog: BlogInputModel = {
@@ -96,7 +113,7 @@ describe('/blogs', () => {
         const {status: status2} = await req
             .put(`${SETTINGS.PATH.BLOGS}/${createdBlog.id}`)
             .set({'Authorization': 'Basic uasdi1h3123'})
-            .send(dataToCreateBlog)
+            .send(dataToUpdateBlog)
         expect(status2).toEqual(HTTPStatusCodesEnum.Unauthorized_401)
 
         // DELETE by id

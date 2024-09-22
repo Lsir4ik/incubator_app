@@ -1,3 +1,4 @@
+/*
 import {PostViewModel} from "../../models/posts/PostViewModel";
 import {PostInputModel} from "../../models/posts/PostInputModel";
 import {blogsRepository} from "./blogs.memory.repository";
@@ -59,3 +60,5 @@ export const postRepository = {
         posts = []
     }
 }
+
+ */

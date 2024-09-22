@@ -1,13 +1,11 @@
 import {agent} from "supertest";
 import {app} from "../../src/app";
 import {HTTPStatusCodesEnum, SETTINGS} from "../../src/settings";
-import {BlogViewModel} from "../../src/models/blogs/BlogViewModel";
 import {PostInputModel} from "../../src/models/posts/PostInputModel";
 import {PostViewModel} from "../../src/models/posts/PostViewModel";
 import {BlogInputModel} from "../../src/models/blogs/BlogInputModel";
 import {blogsTestManager} from "../blogs/blogs.test.helpers";
 import {postsTestManager} from "./posts.test.helpers";
-import {getRawAsset} from "node:sea";
 
 const req = agent(app)
 
@@ -38,9 +36,13 @@ describe('/posts', () => {
         expect(createdPostStatus).toBe(HTTPStatusCodesEnum.Created_201)
         expect(createdPost).toEqual({
             id: createdPost.id,
-            ...dataToCreatePost,
-            blogId: createdBlog.id,
-            blogName: createdBlog.name})
+            title: '1st Post',
+            shortDescription: '1st Post description',
+            content: '1st Post content',
+            blogId: createdPost.blogId,
+            blogName: createdPost.blogName,
+            createdAt: createdPost.createdAt
+        })
 
         createdEntity = createdPost
     })
@@ -85,17 +87,20 @@ describe('/posts', () => {
         expect(createdPost).toEqual({
             id: createdPost.id,
             ...dataToCreatePost,
-            blogId: createdBlog.id,
-            blogName: createdBlog.name})
+            blogName: createdPost.blogName,
+            createdAt: createdPost.createdAt
+        })
 
         // GET by id
         const {status: status1, body: createdPost1} = await postsTestManager.getPostById(createdPost.id)
         expect(status1).toEqual(HTTPStatusCodesEnum.OK_200)
         expect(createdPost1).toEqual({
+            _id: expect.any(String),
             id: createdPost.id,
             ...dataToCreatePost,
-            blogId: createdBlog.id,
-            blogName: createdBlog.name})
+            blogName: createdPost.blogName,
+            createdAt: createdPost.createdAt
+        })
 
         // Переприсваеваем createdEntity
         createdEntity = createdPost

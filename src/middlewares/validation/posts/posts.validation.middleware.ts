@@ -1,12 +1,13 @@
-import {CustomValidation} from "express-validator/lib/context-items";
 import {body, CustomValidator} from "express-validator";
-import {blogsRepository} from "../../../repositories/Local/blogs.memory.repository";
-import {BlogViewModel} from "../../../models/blogs/BlogViewModel";
+import {blogsRepository} from "../../../repositories/Mongo/blogs.db.repository";
 import {inputValidationMiddleware} from "../input.validation.middleware";
 
-const customIsValidBlogId: CustomValidator = (value: string): boolean => {
-    const blog: BlogViewModel | undefined = blogsRepository.findBlogById(value)
-    return !!blog
+const customIsValidBlogId: CustomValidator = async (idOfBlog: string): Promise<void> => {
+    const foundBlog = await blogsRepository.findBlogById(idOfBlog)
+    // return !!foundBlog
+    if (!foundBlog) {
+        throw new Error("Blog not found");
+    }
 }
 
 const titleValidation = body('title').notEmpty().isString().trim().isLength({max: 30})
