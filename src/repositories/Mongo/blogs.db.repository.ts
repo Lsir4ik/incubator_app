@@ -9,25 +9,9 @@ export const blogsRepository = {
     async findBlogById(id: string): Promise<BlogViewModel | null> {
         return blogsCollections.findOne({id: id})
     },
-    async createBlog(dataToCreate: BlogInputModel): Promise<BlogViewModel> {
-        const newBlog: BlogViewModel = {
-            id: new Date().getTime().toString(),
-            name: dataToCreate.name,
-            description: dataToCreate.description,
-            webSiteUrl: dataToCreate.webSiteUrl,
-            createdAt: new Date().toISOString(),
-            isMembership: false,
-        }
+    async createBlog(newBlog: BlogViewModel): Promise<boolean> {
         const createResult = await blogsCollections.insertOne(newBlog)
-        // createResult для дальнейшего использования id mongo
-        return { // ...newBlog
-            id: newBlog.id,
-            name: newBlog.name,
-            description: newBlog.description,
-            webSiteUrl: newBlog.webSiteUrl,
-            createdAt: newBlog.createdAt,
-            isMembership: newBlog.isMembership
-        }
+        return createResult.acknowledged
     },
     async updateBlog(id: string, dataToUpdate: BlogInputModel): Promise<boolean> {
         const updateResult = await blogsCollections.updateOne({id: id}, {
@@ -46,4 +30,8 @@ export const blogsRepository = {
     async deleteAllBlogs(): Promise<void> {
         await blogsCollections.deleteMany({})
     }
+}
+
+export const blogsQueryRepository = {
+
 }

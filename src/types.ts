@@ -5,4 +5,7 @@ export type RequestWithBody<T> = Request<{}, {}, T>
 export type RequestWithQuery<T> = Request<{}, {}, {}, T>
 export type RequestWithParamsAndBody<T, B> = Request<T, {}, B>
 
-
+export enum SortDirection {
+    asc = 'asc',
+    desc = 'desc'
+}
