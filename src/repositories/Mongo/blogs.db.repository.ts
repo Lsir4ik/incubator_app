@@ -51,12 +51,13 @@ export const blogsQueryRepository = {
         const dbBlogsToSkip = (dbPageNumber - 1) * dbPageSize
         const dbSearchFilter = dbSearchTerm ? {name: {$regex: new RegExp(`${dbSearchTerm}`, "i")}} : {}
 
-        const foundBlogs: BlogViewModel[] = await blogsCollections.find({dbSearchFilter}, {projection: {_id: 0}})
+        const foundBlogs: BlogViewModel[] = await blogsCollections.find(dbSearchFilter, {projection: {_id: 0}})
             .sort({[dbSortBy]: dbSortDirection})
             .skip(dbBlogsToSkip)
             .limit(dbPageSize)
             .toArray()
-        const allFilteredBlogs = await blogsCollections.find({dbSearchFilter}).toArray()
+        // console.log(foundBlogs)
+        const allFilteredBlogs = await blogsCollections.find(dbSearchFilter).toArray()
         const totalCountOfBlogs = allFilteredBlogs.length
         const pagesCountOfBlogs = Math.ceil(totalCountOfBlogs / dbPageSize)
 

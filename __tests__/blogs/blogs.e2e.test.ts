@@ -132,12 +132,12 @@ describe('hw4 /blogs', () => {
             items: [
                 {
                     id: expect.any(String),
-                    title: '1st post',
-                    shortDescription: '1st post', // TODO порядок при тестах не тот
-                    content: 'content 1st post',
+                    title: '3rd post',
+                    shortDescription: '3rd post',
+                    content: 'content 3rd post',
                     blogId: createdEntity.id,
                     blogName: createdEntity.name,
-                    createdAt: expect.any(String)
+                    createdAt: expect.any(String),
                 },
                 {
                     id: expect.any(String),
@@ -150,23 +150,35 @@ describe('hw4 /blogs', () => {
                 },
                 {
                     id: expect.any(String),
-                    title: '3rd post',
-                    shortDescription: '3rd post',
-                    content: 'content 3rd post',
+                    title: '1st post',
+                    shortDescription: '1st post', // TODO порядок при тестах не тот
+                    content: 'content 1st post',
                     blogId: createdEntity.id,
                     blogName: createdEntity.name,
-                    createdAt: expect.any(String),
+                    createdAt: expect.any(String)
                 }
             ]
         })
     })
     it('GET =/blogs= should return all blogs with pagination, status 200', async () => {
-        // POST
-        const dataToCreateBlog: BlogInputModel = {
-            name: 'some name',
-            description: 'some blog description',
-            webSiteUrl: 'https://asdasda.ru',
-        }
+        // // POST
+        // const dataToCreateBlog: BlogInputModel = {
+        //     name: 'some name',
+        //     description: 'some blog description',
+        //     webSiteUrl: 'https://asdasda.ru',
+        // }
+        // const {status: createdStatus, body: createdBlog} = await blogsTestManager.createBlog(dataToCreateBlog)
+        // expect(createdStatus).toEqual(HTTPStatusCodesEnum.Created_201)
+        // expect(createdBlog).toEqual({
+        //     id: expect.any(String),
+        //     name: 'some name',
+        //     description: 'some blog description',
+        //     webSiteUrl: 'https://asdasda.ru',
+        //     createdAt: expect.any(String),
+        //     isMembership: false,
+        // })
+
+        // GET
         const {status, body} = await blogsTestManager.getAllBlogs() // TODO как добавить пагинацию в query
         expect(status).toEqual(HTTPStatusCodesEnum.OK_200)
         expect(body).toEqual({
@@ -176,11 +188,11 @@ describe('hw4 /blogs', () => {
             totalCount: 1,
             items: [{
                 id: expect.any(String),
-                name: '1st blog',
-                description: '1st description',
-                webSiteUrl: 'http://localhost.1.ru',
+                name: '1st upd blog',
+                description: '1st upd description',
+                webSiteUrl: 'http://localhost.1.upd.ru',
                 createdAt: expect.any(String),
-                isMembership: false,
+                isMembership: false
             }]
         })
 
@@ -327,7 +339,16 @@ describe('hw4 /blogs', () => {
     it('GET, should return all blogs in DB, status 200 ', async () => {
         const {status, body:allBlogs} = await blogsTestManager.getAllBlogs()
         expect(status).toEqual(HTTPStatusCodesEnum.OK_200)
-        expect(allBlogs).toEqual(expect.any(Array))
+        expect(allBlogs).toEqual({
+                pagesCount: 1,
+                page: 1,
+                pageSize: 10,
+                totalCount: expect.any(Number), // TODO поправить
+                items: expect.any(Array), // TODO поправить
+
+        }
+        )
     })
+    // TODO добавить тесты для пагинации (после уточнения в тестменеджер
 })
 

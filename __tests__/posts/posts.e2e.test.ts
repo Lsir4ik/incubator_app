@@ -211,6 +211,14 @@ describe('/posts', () => {
     it('GETm should return all posts in DB, status 200 ', async () => {
         const {status, body:allPosts} = await postsTestManager.getAllPosts()
         expect(status).toEqual(HTTPStatusCodesEnum.OK_200)
-        expect(allPosts).toEqual(expect.any(Array))
-    });
+        expect(allPosts).toEqual(
+            {
+            pagesCount: 1,
+            page: 1,
+            pageSize: 10,
+            totalCount: expect.any(Number),
+            items: expect.any(Array),
+        })
+
+    })
 })
