@@ -1,5 +1,5 @@
 export type BlogPostInputModel = {
     title: string;
-    sortDescription: string;
+    shortDescription: string;
     content: string;
 }

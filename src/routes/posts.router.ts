@@ -3,17 +3,25 @@ import {HTTPStatusCodesEnum} from "../settings";
 import {PostViewModel} from "../models/posts/PostViewModel";
 import {authMiddleware} from "../middlewares/authorization.middleware";
 import {createPostValidation, updatePostValidation} from "../middlewares/validation/posts/posts.validation.middleware";
-import {RequestWithBody, RequestWithParams, RequestWithParamsAndBody} from "../types";
+import {RequestWithBody, RequestWithParams, RequestWithParamsAndBody, RequestWithQuery} from "../types";
 import {PostInputModel} from "../models/posts/PostInputModel";
 import {UpdateParamsPostModel} from "../models/posts/UpdateParamsPostModel";
 import {QueryParamsPostModel} from "../models/posts/QueryParamsPostModel";
 import {DeleteParamsBlogModel} from "../models/blogs/DeleteParamsBlogModel";
 import {postsService} from "../service/posts.service";
+import {postsQueryRepository} from "../repositories/Mongo/posts.db.repository";
+import {PaginatorPostModel} from "../models/posts/PaginatorPostModel";
+import {SearchQueryPostsModel} from "../models/posts/SearchQueryPostsModel";
 
 export const postsRouter: Router = Router()
 
-postsRouter.get('/', async (req: Request, res: Response) => {
-    const foundPosts: PostViewModel[] = await postsService.findAllPosts()
+postsRouter.get('/', async (req: RequestWithQuery<SearchQueryPostsModel>, res: Response) => {
+    const foundPosts: PaginatorPostModel = await postsQueryRepository.findPostsPagination(
+        req.query.pageNumber,
+        req.query.pageSize,
+        req.query.sortBy,
+        req.query.sortDirection
+    )
     res.status(HTTPStatusCodesEnum.OK_200).send(foundPosts)
 })
 postsRouter.post('/', authMiddleware, createPostValidation, async (req: RequestWithBody<PostInputModel>, res: Response) => {

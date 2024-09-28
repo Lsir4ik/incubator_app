@@ -10,10 +10,10 @@ const customIsValidBlogId: CustomValidator = async (idOfBlog: string): Promise<v
     }
 }
 
-const titleValidation = body('title').notEmpty().isString().trim().isLength({max: 30})
-const shortDescriptionValidation = body('shortDescription').notEmpty().isString().trim().isLength({max: 100})
-const contentValidation = body('content').isString().trim().notEmpty().isLength({max: 1000})
-const blogIdValidation = body('blogId').isString().trim().notEmpty().custom(customIsValidBlogId)
+export const titleValidation = body('title').notEmpty().isString().trim().isLength({max: 30})
+export const shortDescriptionValidation = body('shortDescription').notEmpty().isString().trim().isLength({max: 100})
+export const contentValidation = body('content').isString().trim().notEmpty().isLength({max: 1000})
+export const blogIdValidation = body('blogId').isString().trim().notEmpty().custom(customIsValidBlogId)
 
 export const createPostValidation = [
     titleValidation,

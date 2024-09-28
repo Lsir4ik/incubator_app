@@ -2,6 +2,7 @@ import {PostViewModel} from "../models/posts/PostViewModel";
 import {postsRepository} from "../repositories/Mongo/posts.db.repository";
 import {PostInputModel} from "../models/posts/PostInputModel";
 import {blogsRepository} from "../repositories/Mongo/blogs.db.repository";
+import {postsCollections} from "../db/db";
 
 export const postsService = {
     async findAllPosts(): Promise<PostViewModel[]> {
@@ -22,15 +23,19 @@ export const postsService = {
                 blogName: foundBlog.name,
                 createdAt: new Date().toISOString(),
             }
-            return {
-                id: newPost.id,
-                title: newPost.title,
-                shortDescription: newPost.shortDescription,
-                content: newPost.content,
-                blogId: newPost.blogId,
-                blogName: newPost.blogName,
-                createdAt: newPost.createdAt,
+            const createdResult = await postsRepository.createPost(newPost)
+            if (createdResult) {
+                return {
+                    id: newPost.id,
+                    title: newPost.title,
+                    shortDescription: newPost.shortDescription,
+                    content: newPost.content,
+                    blogId: newPost.blogId,
+                    blogName: newPost.blogName,
+                    createdAt: newPost.createdAt,
+                }
             }
+            return null
         }
         return null
     },

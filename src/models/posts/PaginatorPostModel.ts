@@ -1,6 +1,6 @@
 import {PostViewModel} from "./PostViewModel";
 
-export type PaginatorPostInputModel = {
+export type PaginatorPostModel = {
     pagesCount: number;
     page: number;
     pageSize: number;

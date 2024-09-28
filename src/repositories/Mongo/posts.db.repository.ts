@@ -1,6 +1,8 @@
 import {PostViewModel} from "../../models/posts/PostViewModel";
 import {blogsCollections, postsCollections} from "../../db/db";
 import {PostInputModel} from "../../models/posts/PostInputModel";
+import {PaginatorPostModel} from "../../models/posts/PaginatorPostModel";
+import {SortDirection} from "../../types";
 
 export const postsRepository = {
     async findAllPosts():Promise<PostViewModel[]> {
@@ -30,5 +32,36 @@ export const postsRepository = {
     },
     async deleteAllPosts(): Promise<void> {
         await postsCollections.deleteMany({})
+    }
+}
+
+export const postsQueryRepository = {
+    async findPostsPagination (pageNumber?: string,
+                               pageSize?: string,
+                               sortBy?: string,
+                               sortDirection?: string): Promise<PaginatorPostModel> {
+        const dbPageNumber = pageNumber ? Number(pageNumber) : 1
+        const dbPageSize = pageSize ? Number(pageSize) : 10
+        const dbSortBy = sortBy || 'createdAt'
+        const dbSortDirection = sortDirection ? sortDirection === SortDirection.asc ? 1 : -1 : -1
+        const dbPostsToSkip = (dbPageNumber - 1) * dbPageSize
+
+        const foundPagedPosts: PostViewModel[] = await postsCollections.find({}, {projection: {_id:0}})
+            .sort({[dbSortBy]: dbSortDirection})
+            .skip(dbPostsToSkip)
+            .limit(dbPageSize)
+            .toArray()
+
+        const allPosts = await postsCollections.find({},{projection: {_id:0}}).toArray()
+        const totalCountOfPosts = allPosts.length
+        const pagesCount = Math.ceil(totalCountOfPosts / dbPageSize)
+
+        return {
+            pagesCount: pagesCount,
+            page: dbPageNumber,
+            pageSize: dbPageSize,
+            totalCount: totalCountOfPosts,
+            items: foundPagedPosts
+        }
     }
 }
