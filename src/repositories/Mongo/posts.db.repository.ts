@@ -1,5 +1,5 @@
 import {PostViewModel} from "../../models/posts/PostViewModel";
-import {blogsCollections, postsCollections} from "../../db/db";
+import {postsCollections} from "../../db/db";
 import {PostInputModel} from "../../models/posts/PostInputModel";
 import {PaginatorPostModel} from "../../models/posts/PaginatorPostModel";
 import {SortDirection} from "../../types";
@@ -21,7 +21,7 @@ export const postsRepository = {
                 title: dataToUpdate.title,
                 shortDescription: dataToUpdate.shortDescription,
                 content: dataToUpdate.content,
-                blogId: dataToUpdate.blogId, // TODO будто не надо обновлять
+                blogId: dataToUpdate.blogId,
             }
         })
         return updateResult.matchedCount === 1

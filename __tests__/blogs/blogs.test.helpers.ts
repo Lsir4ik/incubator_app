@@ -11,7 +11,7 @@ let data = `${users[0].login}:${users[0].password}`
 let buff = Buffer.from(data)
 let codeAuth = buff.toString('base64')
 
-export const blogsTestManager = { // TODO как добавить search query
+export const blogsTestManager = {
     // async getAllBlogs(searchNameTerm: string = 'null',
     //                   sortBy: string = 'createdAt',
     //                   sortDirection: string = 'desc',
@@ -37,7 +37,7 @@ export const blogsTestManager = { // TODO как добавить search query
     async createPostForSpecificBlog(blogId: string, data: BlogPostInputModel) {
         return req.post( `${SETTINGS.PATH.BLOGS}/${blogId}/posts`).set({'Authorization': 'Basic ' + codeAuth}).send(data)
     },
-    // async getPostsOfSpecificBlog(blogId: string, // TODO как добавить search query
+    // async getPostsOfSpecificBlog(blogId: string,
     //                              pageNumber: string = '1',
     //                              pageSize: string = '10',
     //                              sortBy: string = 'createdAt',

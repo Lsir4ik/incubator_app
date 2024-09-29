@@ -151,7 +151,7 @@ describe('hw4 /blogs', () => {
                 {
                     id: expect.any(String),
                     title: '1st post',
-                    shortDescription: '1st post', // TODO порядок при тестах не тот
+                    shortDescription: '1st post',
                     content: 'content 1st post',
                     blogId: createdEntity.id,
                     blogName: createdEntity.name,
@@ -179,7 +179,7 @@ describe('hw4 /blogs', () => {
         // })
 
         // GET
-        const {status, body} = await blogsTestManager.getAllBlogs() // TODO как добавить пагинацию в query
+        const {status, body} = await blogsTestManager.getAllBlogs()
         expect(status).toEqual(HTTPStatusCodesEnum.OK_200)
         expect(body).toEqual({
             pagesCount: 1,
@@ -248,7 +248,7 @@ describe('hw4 /blogs', () => {
         // POST
         const {status: createdStatus, body} = await blogsTestManager.createBlog(dataToCreateOrUpdateBlog)
         expect(createdStatus).toEqual(HTTPStatusCodesEnum.Bad_Request_400)
-        expect(body).toEqual(expect.any(Object)) // TODO Уточнить объект
+        expect(body).toEqual(expect.any(Object))
         // PUT
         const {status:updatedStatus} = await blogsTestManager.updateBlog(dataToCreateOrUpdateBlog, body.id)
         expect(updatedStatus).toEqual(HTTPStatusCodesEnum.Bad_Request_400)
@@ -264,7 +264,7 @@ describe('hw4 /blogs', () => {
         // POST
         const {status: createdStats1, body:body1} = await blogsTestManager.createBlog(dataToCreateOrUpdateBlog1)
         expect(createdStats1).toEqual(HTTPStatusCodesEnum.Bad_Request_400)
-        expect(body1).toEqual(expect.any(Object)) // TODO Уточнить объект
+        expect(body1).toEqual(expect.any(Object))
         // PUT
         const {status:updatedStatus1} = await blogsTestManager.updateBlog(dataToCreateOrUpdateBlog1, body1.id)
         expect(updatedStatus1).toEqual(HTTPStatusCodesEnum.Bad_Request_400)
@@ -278,7 +278,7 @@ describe('hw4 /blogs', () => {
         // POST
         const {status: createdStatus2, body:body2} = await blogsTestManager.createBlog(dataToCreateOrUpdateBlog2)
         expect(createdStatus2).toEqual(HTTPStatusCodesEnum.Bad_Request_400)
-        expect(body2).toEqual(expect.any(Object)) // TODO Уточнить объект
+        expect(body2).toEqual(expect.any(Object))
         // PUT
         const {status:updatedStatus2} = await blogsTestManager.updateBlog(dataToCreateOrUpdateBlog2, body2.id)
         expect(updatedStatus2).toEqual(HTTPStatusCodesEnum.Bad_Request_400)
@@ -343,12 +343,11 @@ describe('hw4 /blogs', () => {
                 pagesCount: 1,
                 page: 1,
                 pageSize: 10,
-                totalCount: expect.any(Number), // TODO поправить
-                items: expect.any(Array), // TODO поправить
+                totalCount: expect.any(Number),
+                items: expect.any(Array),
 
         }
         )
     })
-    // TODO добавить тесты для пагинации (после уточнения в тестменеджер
 })
 

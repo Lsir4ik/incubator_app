@@ -208,7 +208,7 @@ describe('/posts', () => {
         const {status:readStatus} = await postsTestManager.getPostById('dfghfsghdfghj')
         expect(readStatus).toEqual(HTTPStatusCodesEnum.Not_Found_404)
     })
-    it('GETm should return all posts in DB, status 200 ', async () => {
+    it('GET should return all posts in DB, status 200 ', async () => {
         const {status, body:allPosts} = await postsTestManager.getAllPosts()
         expect(status).toEqual(HTTPStatusCodesEnum.OK_200)
         expect(allPosts).toEqual(

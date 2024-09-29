@@ -22,9 +22,7 @@ export const blogsService = {
             isMembership: false,
         }
 
-        // TODO if-else обработка ошибки вставки ???
         await blogsRepository.createBlog(newBlog)
-        // TODO почему добавляется _id?
         return {
             id: newBlog.id,
             name: newBlog.name,
