@@ -3,7 +3,7 @@ import {HTTPStatusCodesEnum} from "../settings";
 import {PostViewModel} from "../models/posts/PostViewModel";
 import {authMiddleware} from "../middlewares/authorization.middleware";
 import {createPostValidation, updatePostValidation} from "../middlewares/validation/posts/posts.validation.middleware";
-import {RequestWithBody, RequestWithParams, RequestWithParamsAndBody, RequestWithQuery} from "../types";
+import {RequestWithBody, RequestWithParams, RequestWithParamsAndBody, RequestWithQuery} from "../models/types";
 import {PostInputModel} from "../models/posts/PostInputModel";
 import {UpdateParamsPostModel} from "../models/posts/UpdateParamsPostModel";
 import {QueryParamsPostModel} from "../models/posts/QueryParamsPostModel";

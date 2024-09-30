@@ -6,9 +6,11 @@ export const SETTINGS = {
     PORT: process.env.PORT || 3000,
     PATH: {
         VIDEOS: '/videos',
-        TESTING: '/ht_02/api/testing/all-data',
-        BLOGS: '/ht_2/api/blogs',
-        POSTS: '/ht_2/api/posts',
+        TESTING: '/hometask_05/api/testing/all-data',
+        BLOGS: '/hometask_05/api/blogs',
+        POSTS: '/hometask_05/api/posts',
+        AUTH: 'hometask_05/api/auth/login',
+        USERS: '/hometask_05/api/users',
     }
 }
 

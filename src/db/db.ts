@@ -2,6 +2,8 @@ import {config} from "dotenv";
 import {MongoClient} from "mongodb";
 import {BlogViewModel} from "../models/blogs/BlogViewModel";
 import {PostViewModel} from "../models/posts/PostViewModel";
+import {UserViewModel} from "../models/users/UserViewModel";
+import {UserDBViewModel} from "../models/users/UserDBViewModel";
 
 config()
 
@@ -16,6 +18,7 @@ export const client = new MongoClient(url, {})
 const db = client.db('incubator-app-dev')
 export const blogsCollections = db.collection<BlogViewModel>('blogs')
 export const postsCollections = db.collection<PostViewModel>('posts')
+export const usersCollections = db.collection<UserDBViewModel>('users')
 
 export const runDb = async () => {
     try {

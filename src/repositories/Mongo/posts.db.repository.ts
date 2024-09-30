@@ -2,7 +2,7 @@ import {PostViewModel} from "../../models/posts/PostViewModel";
 import {postsCollections} from "../../db/db";
 import {PostInputModel} from "../../models/posts/PostInputModel";
 import {PaginatorPostModel} from "../../models/posts/PaginatorPostModel";
-import {SortDirection} from "../../types";
+import {SortDirection} from "../../models/types";
 
 export const postsRepository = {
     async findAllPosts():Promise<PostViewModel[]> {

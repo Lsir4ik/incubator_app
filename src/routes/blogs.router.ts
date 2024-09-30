@@ -13,7 +13,7 @@ import {
     RequestWithParamsAndBody,
     RequestWithParamsAndQuery,
     RequestWithQuery
-} from "../types";
+} from "../models/types";
 import {DeleteParamsBlogModel} from "../models/blogs/DeleteParamsBlogModel";
 import {UpdateParamsBlogModel} from "../models/blogs/UpdateParamsBlogModel";
 import {BlogInputModel} from "../models/blogs/BlogInputModel";
