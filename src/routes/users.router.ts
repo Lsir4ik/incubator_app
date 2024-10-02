@@ -25,7 +25,9 @@ userRouter.get('/', authMiddleware, async (req: RequestWithQuery<QueryUsersModel
 userRouter.post('/', authMiddleware, createUserValidation, async (req:RequestWithBody<UserInputModel>, res: Response) => {
     const createdUser = await usersService.createUser(req.body)
     if (createdUser) return res.status(HTTPStatusCodesEnum.Created_201).send(createdUser)
-    return res.sendStatus(HTTPStatusCodesEnum.Bad_Request_400)
+    return res.status(HTTPStatusCodesEnum.Bad_Request_400).send({
+        errorsMessages: [{field: 'email or login', message: 'email and login should be unique'}]
+    })
 })
 userRouter.delete('/:id', authMiddleware, async (req: RequestWithParams<DeleteByIdParamsUserModel>, res: Response) => {
     const isDeleted = await usersService.deleteUserById(req.params.id)

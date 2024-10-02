@@ -14,7 +14,6 @@ export const inputValidationMiddleware = (req: Request,res :Response, next:NextF
                     message: error.msg,
                     field: error.path
                 }
-
             })
         });
     } else {

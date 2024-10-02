@@ -8,6 +8,12 @@ import {UserDBViewModel} from "../models/users/UserDBViewModel";
 export const usersService = {
     async createUser(dataToCreate: UserInputModel): Promise<UserViewModel | null> {
         const {login, password, email} = dataToCreate
+
+        // Check unique login or email
+        const isLoginExist = await usersRepository.findUserByLoginOrEmail(login)
+        const isEmailExist = await usersRepository.findUserByLoginOrEmail(email)
+        if (isLoginExist || isEmailExist) return null
+
         // Создаем соль
         const passwordSalt = bcrypt.genSaltSync(10)
         // генерируем хэш

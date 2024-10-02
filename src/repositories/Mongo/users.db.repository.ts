@@ -14,11 +14,11 @@ export const usersRepository = {
         return deleteResult.deletedCount === 1
     },
     async findUserByLoginOrEmail(loginOrEmail: string): Promise<UserDBViewModel | null> {
-        const foundUser = await usersCollections.findOne(
+        return usersCollections.findOne(
             {$or: [{login: loginOrEmail}, {email: loginOrEmail}]},
             {projection: {_id: 0}})
-        if (foundUser) return foundUser
-        return null
+        // if (foundUser) return foundUser
+        // return null
     },
     async deleteAllUsers(): Promise<void> {
         await usersCollections.deleteMany({})

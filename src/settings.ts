@@ -9,7 +9,7 @@ export const SETTINGS = {
         TESTING: '/hometask_05/api/testing/all-data',
         BLOGS: '/hometask_05/api/blogs',
         POSTS: '/hometask_05/api/posts',
-        AUTH: 'hometask_05/api/auth/login',
+        AUTH: '/hometask_05/api/auth/login',
         USERS: '/hometask_05/api/users',
     }
 }
