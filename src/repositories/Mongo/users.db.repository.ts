@@ -1,7 +1,7 @@
 import {PaginatorUserViewModel} from "../../models/users/PaginatorUserViewModel";
 import {usersCollections} from "../../db/db";
 import {UserDBViewModel} from "../../models/users/UserDBViewModel";
-import {SortDirection} from "../../models/types";
+import {SortDirection} from "../../types/types";
 import {UserViewModel} from "../../models/users/UserViewModel";
 
 export const usersRepository = {
@@ -22,6 +22,9 @@ export const usersRepository = {
     },
     async deleteAllUsers(): Promise<void> {
         await usersCollections.deleteMany({})
+    },
+    async findUserById(id: string): Promise<UserDBViewModel | null> {
+        return usersCollections.findOne({id: id})
     }
 }
 

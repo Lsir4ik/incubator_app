@@ -2,7 +2,7 @@ import {BlogViewModel} from "../../models/blogs/BlogViewModel";
 import {blogsCollections, postsCollections} from "../../db/db";
 import {BlogInputModel} from "../../models/blogs/BlogInputModel";
 import {PaginatorBlogViewModel} from "../../models/blogs/PaginatorBlogViewModel";
-import {SortDirection} from "../../models/types";
+import {SortDirection} from "../../types/types";
 import {PaginatorPostModel} from "../../models/posts/PaginatorPostModel";
 import {PostViewModel} from "../../models/posts/PostViewModel";
 

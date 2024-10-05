@@ -1,8 +1,10 @@
 import {PostViewModel} from "../../models/posts/PostViewModel";
-import {postsCollections} from "../../db/db";
+import {commentsCollections, postsCollections} from "../../db/db";
 import {PostInputModel} from "../../models/posts/PostInputModel";
 import {PaginatorPostModel} from "../../models/posts/PaginatorPostModel";
-import {SortDirection} from "../../models/types";
+import {SortDirection} from "../../types/types";
+import {PaginatorCommentViewModel} from "../../models/comments/PaginatorCommentViewModel";
+import {CommentViewModel} from "../../models/comments/CommentViewModel";
 
 export const postsRepository = {
     async findAllPosts():Promise<PostViewModel[]> {
@@ -62,6 +64,34 @@ export const postsQueryRepository = {
             pageSize: dbPageSize,
             totalCount: totalCountOfPosts,
             items: foundPagedPosts
+        }
+    },
+    async findCommentsOfPost(postId: string,
+                             pageNumber?: string,
+                             pageSize?: string,
+                             sortBy?: string,
+                             sortDirection?: string): Promise<PaginatorCommentViewModel> {
+        const dbPageNumber = pageNumber ? Number(pageNumber) : 1
+        const dbPageSize = pageSize ? Number(pageSize) : 10
+        const dbSortBy = sortBy || 'createdAt'
+        const dbSortDirection = sortDirection ? sortDirection === SortDirection.asc ? 1 : -1 : -1
+        const dbPostsToSkip = (dbPageNumber - 1) * dbPageSize
+
+        const foundComments: CommentViewModel[] = await commentsCollections.find({postId: postId}, {projection: {_id:0}})
+            .sort({[dbSortBy]: dbSortDirection})
+            .skip(dbPostsToSkip)
+            .limit(dbPageSize)
+            .toArray()
+        const allComments = await commentsCollections.find({postId: postId}, {projection: {_id:0}}).toArray()
+        const totalCountOfComments = allComments.length
+        const pagesCount = Math.ceil(totalCountOfComments / dbPageSize)
+
+        return {
+            pagesCount: pagesCount,
+            page: dbPageNumber,
+            pageSize: dbPageSize,
+            totalCount: totalCountOfComments,
+            items: foundComments
         }
     }
 }

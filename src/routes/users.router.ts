@@ -1,5 +1,5 @@
 import {Response, Router} from "express";
-import {RequestWithBody, RequestWithParams, RequestWithQuery} from "../models/types";
+import {RequestWithBody, RequestWithParams, RequestWithQuery} from "../types/types";
 import {QueryUsersModel} from "../models/users/QueryUsersModel";
 import {HTTPStatusCodesEnum} from "../settings";
 import {usersQueryRepository} from "../repositories/Mongo/users.db.repository";

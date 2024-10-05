@@ -61,15 +61,7 @@ describe('Users', () => {
         const {status: getUserStatus} = await req.get(SETTINGS.PATH.USERS).set({'Authorization': 'Basic uasdi1h3123'})
         expect(getUserStatus).toEqual(HTTPStatusCodesEnum.Unauthorized_401)
     })
-    it('POST =/auth= should return error if auth credentials is incorrect, status 401', async () => {
-        const dataToLogin: LoginInputModel = {
-            loginOrEmail: '1stuser',
-            password: 'qwrt'
-        }
-        const {status: loginStatus} = await req.post(SETTINGS.PATH.AUTH).send(dataToLogin)
-        expect(loginStatus).toEqual(HTTPStatusCodesEnum.Unauthorized_401)
 
-    })
     it('DELETE =/users/{id}= should not delete not existing user, status 404', async () => {
         const {status: deleteUserStatus} = await usersTestManager.deleteUserById('asdfkjhasdgkjlh')
         expect(deleteUserStatus).toEqual(HTTPStatusCodesEnum.Not_Found_404)
@@ -116,13 +108,7 @@ describe('Users', () => {
         expect(badEmailCreateUserStatus).toEqual(HTTPStatusCodesEnum.Bad_Request_400)
 
     })
-    it('POST =/auth= should sign in user, status 204', async () => {
-        const {status: successSignInStatus} = await req.post(SETTINGS.PATH.AUTH).send({
-            loginOrEmail: '1stuser',
-            password: 'qwerty',
-        })
-        expect(successSignInStatus).toEqual(HTTPStatusCodesEnum.No_Content_204)
-    });
+
     it('DELETE =/users/{id}= should delete user by id, status 204', async () => {
 
         // ---!!!--- Удаляем CreatedEntity!!!

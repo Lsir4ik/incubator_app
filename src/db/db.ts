@@ -4,6 +4,8 @@ import {BlogViewModel} from "../models/blogs/BlogViewModel";
 import {PostViewModel} from "../models/posts/PostViewModel";
 import {UserViewModel} from "../models/users/UserViewModel";
 import {UserDBViewModel} from "../models/users/UserDBViewModel";
+import {CommentViewModel} from "../models/comments/CommentViewModel";
+import {CommentDBViewModel} from "../models/comments/CommentDBViewModel";
 
 config()
 
@@ -19,6 +21,7 @@ const db = client.db('incubator-app-dev')
 export const blogsCollections = db.collection<BlogViewModel>('blogs')
 export const postsCollections = db.collection<PostViewModel>('posts')
 export const usersCollections = db.collection<UserDBViewModel>('users')
+export const commentsCollections = db.collection<CommentDBViewModel>('comments')
 
 export const runDb = async () => {
     try {

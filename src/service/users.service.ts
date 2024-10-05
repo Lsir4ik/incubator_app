@@ -4,6 +4,7 @@ import {usersRepository} from "../repositories/Mongo/users.db.repository";
 import {LoginInputModel} from "../models/login/LoginInputModel";
 import bcrypt from "bcrypt";
 import {UserDBViewModel} from "../models/users/UserDBViewModel";
+import {MeViewModel} from "../models/users/MeViewModel";
 
 export const usersService = {
     async createUser(dataToCreate: UserInputModel): Promise<UserViewModel | null> {
@@ -43,16 +44,34 @@ export const usersService = {
     async _generateHash(password: string, salt: string): Promise<string> {
         return bcrypt.hash(password,salt)
     },
-    async checkCredentials(loginData: LoginInputModel): Promise<boolean> {
+    async checkCredentials(loginData: LoginInputModel): Promise<UserViewModel | null> {
         const foundUser = await usersRepository.findUserByLoginOrEmail(loginData.loginOrEmail)
-        if (!foundUser) return false
+        if (!foundUser) return null
 
         const saltOfFoundUser = foundUser.passwordSalt
         const passwordHashOfFoundUser = foundUser.passwordHash
         const passwordHash = await this._generateHash(loginData.password, saltOfFoundUser)
-        return passwordHash === passwordHashOfFoundUser;
+        if (passwordHash === passwordHashOfFoundUser) return {
+            id: foundUser.id,
+            login: foundUser.login,
+            email: foundUser.email,
+            createdAt: foundUser.createdAt,
+        }
+        return null
     },
     async deleteAllUsers(): Promise<void> {
         await usersRepository.deleteAllUsers()
+    },
+    async findUserById(id: string): Promise<UserViewModel | null> {
+        return usersRepository.findUserById(id)
+    },
+    async findMeById(userId: string): Promise<MeViewModel | null> {
+        const foundUser = await usersRepository.findUserById(userId)
+        if (!foundUser) return null
+        return {
+            email: foundUser.email,
+            login: foundUser.login,
+            userId: foundUser.id,
+        }
     }
 }

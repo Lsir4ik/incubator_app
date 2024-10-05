@@ -4,13 +4,14 @@ config();
 
 export const SETTINGS = {
     PORT: process.env.PORT || 3000,
+    JWT_SECRET: process.env.JWT_SECRET || '123',
     PATH: {
         VIDEOS: '/videos',
-        TESTING: '/hometask_05/api/testing/all-data',
-        BLOGS: '/hometask_05/api/blogs',
-        POSTS: '/hometask_05/api/posts',
-        AUTH: '/hometask_05/api/auth/login',
-        USERS: '/hometask_05/api/users',
+        TESTING: '/hometask_06/api/testing/all-data',
+        BLOGS: '/hometask_06/api/blogs',
+        POSTS: '/hometask_06/api/posts',
+        AUTH: '/hometask_06/api/auth',
+        USERS: '/hometask_06/api/users',
     }
 }
 

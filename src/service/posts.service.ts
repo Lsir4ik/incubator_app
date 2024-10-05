@@ -3,6 +3,12 @@ import {postsRepository} from "../repositories/Mongo/posts.db.repository";
 import {PostInputModel} from "../models/posts/PostInputModel";
 import {blogsRepository} from "../repositories/Mongo/blogs.db.repository";
 import {postsCollections} from "../db/db";
+import {CommentViewModel} from "../models/comments/CommentViewModel";
+import {CommentInputModel} from "../models/comments/CommentInputModel";
+import {usersRepository} from "../repositories/Mongo/users.db.repository";
+import {CommentatorInfo} from "../models/comments/CommentatorInfo";
+import {commentsRepository} from "../repositories/Mongo/comments.db.repository";
+import {CommentDBViewModel} from "../models/comments/CommentDBViewModel";
 
 export const postsService = {
     async findAllPosts(): Promise<PostViewModel[]> {
@@ -47,5 +53,33 @@ export const postsService = {
     },
     async deleteAllPosts(): Promise<void> {
         return postsRepository.deleteAllPosts()
+    },
+    async createCommentForPost(postId: string, data: CommentInputModel, userId: string): Promise<CommentViewModel | null> {
+        const commentator = await usersRepository.findUserById(userId)
+
+        if (!commentator) return null
+        else {
+            const commentatorInfo: CommentatorInfo = {
+                userId: commentator.id,
+                userLogin: commentator.login,
+            }
+            const newComment: CommentDBViewModel = {
+                postId: postId,
+                id: new Date().getTime().toString(),
+                content: data.content,
+                commentatorInfo: commentatorInfo,
+                createdAt: new Date().toISOString(),
+            }
+            const createdResult = await commentsRepository.createComment(newComment)
+            if (createdResult) {
+                return {
+                    id: newComment.id,
+                    content: newComment.content,
+                    commentatorInfo: newComment.commentatorInfo,
+                    createdAt: newComment.createdAt,
+                }
+            }
+            return null
+        }
     }
 }

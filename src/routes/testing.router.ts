@@ -6,6 +6,7 @@ import {usersRepository} from "../repositories/Mongo/users.db.repository";
 import {usersService} from "../service/users.service";
 import {postsService} from "../service/posts.service";
 import {blogsService} from "../service/blogs.service";
+import {commentsService} from "../service/comments.service";
 
 export const testingRouter = Router()
 
@@ -13,5 +14,6 @@ testingRouter.delete('/', async (req: Request, res: Response) => {
     await blogsService.deleteAllBlogs()
     await postsService.deleteAllPosts()
     await usersService.deleteAllUsers()
+    await commentsService.deleteAllComments()
     res.sendStatus(HTTPStatusCodesEnum.No_Content_204);
 })
