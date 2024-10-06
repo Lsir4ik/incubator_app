@@ -14,7 +14,7 @@ import {PostViewModel} from "../../src/models/posts/PostViewModel";
 import {UserViewModel} from "../../src/models/users/UserViewModel";
 import {LoginSuccessViewModel} from "../../src/models/login/LoginSuccessViewModel";
 import {CommentViewModel} from "../../src/models/comments/CommentViewModel";
-import exp = require("node:constants");
+
 
 const req = agent(app)
 
