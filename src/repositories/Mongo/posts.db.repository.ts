@@ -77,7 +77,7 @@ export const postsQueryRepository = {
         const dbSortDirection = sortDirection ? sortDirection === SortDirection.asc ? 1 : -1 : -1
         const dbPostsToSkip = (dbPageNumber - 1) * dbPageSize
 
-        const foundComments: CommentViewModel[] = await commentsCollections.find({postId: postId}, {projection: {_id:0}})
+        const foundComments: CommentViewModel[] = await commentsCollections.find({postId: postId}, {projection: {_id:0, postId: 0}})
             .sort({[dbSortBy]: dbSortDirection})
             .skip(dbPostsToSkip)
             .limit(dbPageSize)

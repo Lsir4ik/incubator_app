@@ -26,14 +26,14 @@ export const postsRouter: Router = Router()
 postsRouter.get('/:id/comments', async (req: RequestWithParamsAndQuery<QueryParamsPostModel, SearchQueryPostsModel>, res: Response) => {
     const foundPost = await postsService.findPostById(req.params.id)
     if (!foundPost) return res.sendStatus(HTTPStatusCodesEnum.Not_Found_404)
-    const foundComments = postsQueryRepository.findCommentsOfPost(
+    const foundComments = await postsQueryRepository.findCommentsOfPost(
         req.params.id,
         req.query.pageNumber,
         req.query.pageSize,
         req.query.sortBy,
         req.query.sortDirection
     )
-    return res.status(HTTPStatusCodesEnum.OK_200).json(foundComments)
+    return res.status(HTTPStatusCodesEnum.OK_200).send(foundComments)
 })
 postsRouter.post('/:id/comments', authBarerMiddleware, createCommentValidation, async (req: RequestWithParamsAndBody<QueryParamsPostModel, CommentInputModel>, res: Response) => {
     const foundPost = await postsService.findPostById(req.params.id)

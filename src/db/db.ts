@@ -2,9 +2,7 @@ import {config} from "dotenv";
 import {MongoClient} from "mongodb";
 import {BlogViewModel} from "../models/blogs/BlogViewModel";
 import {PostViewModel} from "../models/posts/PostViewModel";
-import {UserViewModel} from "../models/users/UserViewModel";
 import {UserDBViewModel} from "../models/users/UserDBViewModel";
-import {CommentViewModel} from "../models/comments/CommentViewModel";
 import {CommentDBViewModel} from "../models/comments/CommentDBViewModel";
 
 config()

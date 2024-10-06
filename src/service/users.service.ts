@@ -16,7 +16,7 @@ export const usersService = {
         if (isLoginExist || isEmailExist) return null
 
         // Создаем соль
-        const passwordSalt = bcrypt.genSaltSync(10)
+        const passwordSalt = await bcrypt.genSalt(10)
         // генерируем хэш
         const passwordHash = await this._generateHash(password, passwordSalt)
         // создаем юзера

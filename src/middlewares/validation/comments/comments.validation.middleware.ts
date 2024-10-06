@@ -7,3 +7,7 @@ export const createCommentValidation = [
     contentValidator,
     inputValidationMiddleware
 ]
+export const updateCommentValidator = [
+    contentValidator,
+    inputValidationMiddleware
+]

@@ -1,10 +1,9 @@
-import {CommentViewModel} from "../../models/comments/CommentViewModel";
-import {commentsCollections, usersCollections} from "../../db/db";
+import {commentsCollections} from "../../db/db";
 import {CommentInputModel} from "../../models/comments/CommentInputModel";
 import {CommentDBViewModel} from "../../models/comments/CommentDBViewModel";
 
 export const commentsRepository = {
-    async findCommentById(commentId: string): Promise<CommentViewModel | null> {
+    async findCommentById(commentId: string): Promise<CommentDBViewModel | null> {
         return commentsCollections.findOne({id: commentId})
     },
     async createComment(comment: CommentDBViewModel): Promise<boolean> {

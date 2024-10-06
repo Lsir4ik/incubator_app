@@ -16,9 +16,10 @@ export const authBarerMiddleware = async (req: Request, res: Response, next: Nex
     if (userId) {
         req.user = await usersService.findUserById(userId)
         next()
+    } else {
+        res.sendStatus(HTTPStatusCodesEnum.Unauthorized_401)
+        return;
     }
-    res.sendStatus(HTTPStatusCodesEnum.Unauthorized_401)
-    return;
 }
 
 // Basic ath

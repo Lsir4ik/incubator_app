@@ -12,6 +12,7 @@ export const SETTINGS = {
         POSTS: '/hometask_06/api/posts',
         AUTH: '/hometask_06/api/auth',
         USERS: '/hometask_06/api/users',
+        COMMENTS: '/hometask_06/api/comments',
     }
 }
 
@@ -22,7 +23,8 @@ export enum HTTPStatusCodesEnum {
     No_Content_204 = 204,
     Bad_Request_400 = 400,
     Unauthorized_401 = 401,
-    Not_Found_404 = 404
+    Forbidden_403 = 403,
+    Not_Found_404 = 404,
 }
 
 export enum Resolutions {

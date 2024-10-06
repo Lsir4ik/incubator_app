@@ -1,4 +1,4 @@
-export type UserDBViewModel = { // TODO можно ли так, если в Swagger db.UserViewModel??
+export type UserDBViewModel = {
     id: string
     login: string
     email: string

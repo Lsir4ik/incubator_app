@@ -19,5 +19,6 @@ authRouter.post('/login', authValidation, async (req: RequestWithBody<LoginInput
 })
 authRouter.get('/me', authBarerMiddleware, async (req: Request, res: Response) => {
     const meInfo: MeViewModel | null = await usersService.findMeById(req.user!.id)
-    return res.status(HTTPStatusCodesEnum.OK_200).send(meInfo)
+    if (meInfo) return res.status(HTTPStatusCodesEnum.OK_200).send(meInfo)
+    return res.sendStatus(HTTPStatusCodesEnum.Unauthorized_401)
 })
