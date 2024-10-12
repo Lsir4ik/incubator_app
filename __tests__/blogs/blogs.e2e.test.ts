@@ -1,17 +1,18 @@
-import {BlogInputModel} from "../../src/models/blogs/BlogInputModel";
+import {BlogInputModel} from "../../src/blogs/types/BlogInputModel";
 import {blogsTestManager} from "./blogs.test.helpers";
-import {HTTPStatusCodesEnum, SETTINGS} from "../../src/settings";
 import {agent} from "supertest";
 import {app} from "../../src/app";
-import {BlogViewModel} from "../../src/models/blogs/BlogViewModel";
-import {BlogPostInputModel} from "../../src/models/blogs/BlogPostInputModel";
+import {BlogViewModel} from "../../src/blogs/types/BlogViewModel";
+import {BlogPostInputModel} from "../../src/blogs/types/BlogPostInputModel";
 import {postsTestManager} from "../posts/posts.test.helpers";
+import {routerPaths} from "../../src/common/path/path";
+import {HttpStatusCodes} from "../../src/common/types/httpsStatusCodes";
 
 const req = agent(app)
 
 describe('hw4 /blogs', () => {
     beforeAll(async () => {
-        await req.delete(SETTINGS.PATH.TESTING)
+        await req.delete(routerPaths.testing)
     })
     let createdEntity: BlogViewModel
     it('POST =/blogs= should create a blog, status 201, return new blog', async () => {
@@ -22,7 +23,7 @@ describe('hw4 /blogs', () => {
         }
         // POST
         const {status: createdBlog1Status, body: createdBlog1} = await blogsTestManager.createBlog(dataToCreateBlog)
-        expect(createdBlog1Status).toEqual(HTTPStatusCodesEnum.Created_201)
+        expect(createdBlog1Status).toEqual(HttpStatusCodes.Created_201)
         expect(createdBlog1).toEqual({
             id: expect.any(String),
             name: '1st blog',
@@ -36,7 +37,7 @@ describe('hw4 /blogs', () => {
 
         // GET by id
         const {status: getStatus, body: receivedBlog} = await blogsTestManager.getBlogById(createdBlog1.id)
-        expect(getStatus).toEqual(HTTPStatusCodesEnum.OK_200)
+        expect(getStatus).toEqual(HttpStatusCodes.OK_200)
         expect(receivedBlog).toEqual({
             id: expect.any(String),
             name: '1st blog',
@@ -53,11 +54,11 @@ describe('hw4 /blogs', () => {
         }
         // PUT
         const {status: updatedStatus} = await blogsTestManager.updateBlog(dataToUpdateBlog, createdEntity.id)
-        expect(updatedStatus).toEqual(HTTPStatusCodesEnum.No_Content_204)
+        expect(updatedStatus).toEqual(HttpStatusCodes.No_Content_204)
 
         // GET by id, verify update
         const {status: receivedStatus, body: updatedBlog} = await blogsTestManager.getBlogById(createdEntity.id)
-        expect(receivedStatus).toEqual(HTTPStatusCodesEnum.OK_200)
+        expect(receivedStatus).toEqual(HttpStatusCodes.OK_200)
         expect(updatedBlog).toEqual({
             id: expect.any(String),
             name: '1st upd blog',
@@ -70,7 +71,7 @@ describe('hw4 /blogs', () => {
     })
     it('GET =/blogs/{blogId}= return blog by id, status 200', async () => {
         const {status: getStatus, body: receivedBlog} = await blogsTestManager.getBlogById(createdEntity.id)
-        expect(getStatus).toEqual(HTTPStatusCodesEnum.OK_200)
+        expect(getStatus).toEqual(HttpStatusCodes.OK_200)
         expect(receivedBlog).toEqual({
             id: expect.any(String),
             name: '1st upd blog',
@@ -87,7 +88,7 @@ describe('hw4 /blogs', () => {
             content: 'content 1st post'
         }
         const {status: status1, body:createdPostOfBlog_1} = await blogsTestManager.createPostForSpecificBlog(createdEntity.id,dataToCreatePostForSpecificBlog)
-        expect(status1).toEqual(HTTPStatusCodesEnum.Created_201)
+        expect(status1).toEqual(HttpStatusCodes.Created_201)
         expect(createdPostOfBlog_1).toEqual({
             id: expect.any(String),
             title: '1st post',
@@ -112,18 +113,18 @@ describe('hw4 /blogs', () => {
         }
         // POST
         const {status: status1} = await blogsTestManager.createPostForSpecificBlog(createdEntity.id, dataToCreatePostForSpecificBlog_1)
-        expect(status1).toEqual(HTTPStatusCodesEnum.Created_201)
+        expect(status1).toEqual(HttpStatusCodes.Created_201)
         const {status: status2} = await blogsTestManager.createPostForSpecificBlog(createdEntity.id, dataToCreatePostForSpecificBlog_2)
-        expect(status2).toEqual(HTTPStatusCodesEnum.Created_201)
+        expect(status2).toEqual(HttpStatusCodes.Created_201)
 
         // Get all posts
         const {status: status3, body: body1} = await postsTestManager.getAllPosts()
-        expect(status3).toEqual(HTTPStatusCodesEnum.OK_200)
+        expect(status3).toEqual(HttpStatusCodes.OK_200)
         expect(body1.items.length).toEqual(3)
 
         // Get all posts of blog
         const {status, body} = await blogsTestManager.getPostsOfSpecificBlog(createdEntity.id)
-        expect(status).toEqual(HTTPStatusCodesEnum.OK_200)
+        expect(status).toEqual(HttpStatusCodes.OK_200)
         expect(body).toEqual({
             pagesCount: 1,
             page: 1,
@@ -180,7 +181,7 @@ describe('hw4 /blogs', () => {
 
         // GET
         const {status, body} = await blogsTestManager.getAllBlogs()
-        expect(status).toEqual(HTTPStatusCodesEnum.OK_200)
+        expect(status).toEqual(HttpStatusCodes.OK_200)
         expect(body).toEqual({
             pagesCount: 1,
             page: 1,
@@ -200,11 +201,11 @@ describe('hw4 /blogs', () => {
     it('DELETE =/blogs/{blogId}= should delete existing blog by id, status 204', async () => {
         // DELETE -> Удаляем createEntity !
         const {status} = await blogsTestManager.deleteBlogById(createdEntity.id)
-        expect(status).toBe(HTTPStatusCodesEnum.No_Content_204)
+        expect(status).toBe(HttpStatusCodes.No_Content_204)
 
         // GET
         const {status: status1} = await blogsTestManager.getBlogById(createdEntity.id)
-        expect(status1).toEqual(HTTPStatusCodesEnum.Not_Found_404)
+        expect(status1).toEqual(HttpStatusCodes.Not_Found_404)
     })
     it('POST,PUT,DELETE =/blogs= should not create/update/delete a blog with auth error, status 401', async () => {
         const dataToCreateBlog: BlogInputModel = {
@@ -218,8 +219,8 @@ describe('hw4 /blogs', () => {
             webSiteUrl: 'http://localhost.3.upd.ru',
         }
         // POST
-        const{status} = await req.post(SETTINGS.PATH.BLOGS).set({'Authorization': 'Basic uasdi1h3123'}).send(dataToCreateBlog)
-        expect(status).toEqual(HTTPStatusCodesEnum.Unauthorized_401)
+        const{status} = await req.post(routerPaths.blogs).set({'Authorization': 'Basic uasdi1h3123'}).send(dataToCreateBlog)
+        expect(status).toEqual(HttpStatusCodes.Unauthorized_401)
 
         // PUT
         // POST with correct auth data
@@ -227,16 +228,16 @@ describe('hw4 /blogs', () => {
         createdEntity = createdBlog
 
         const {status: status2} = await req
-            .put(`${SETTINGS.PATH.BLOGS}/${createdBlog.id}`)
+            .put(`${routerPaths.blogs}/${createdBlog.id}`)
             .set({'Authorization': 'Basic uasdi1h3123'})
             .send(dataToUpdateBlog)
-        expect(status2).toEqual(HTTPStatusCodesEnum.Unauthorized_401)
+        expect(status2).toEqual(HttpStatusCodes.Unauthorized_401)
 
         // DELETE by id
         const {status: status3} = await req
-            .delete(`${SETTINGS.PATH.BLOGS}/${createdBlog.id}`)
+            .delete(`${routerPaths.blogs}/${createdBlog.id}`)
             .set({'Authorization': 'Basic uasdi1h3123'})
-        expect(status3).toEqual(HTTPStatusCodesEnum.Unauthorized_401)
+        expect(status3).toEqual(HttpStatusCodes.Unauthorized_401)
     })
     it('POST, PUT =/blogs= should not create a blog with validation error, status 400', async () => {
         // Incorrect name
@@ -247,11 +248,11 @@ describe('hw4 /blogs', () => {
         }
         // POST
         const {status: createdStatus, body} = await blogsTestManager.createBlog(dataToCreateOrUpdateBlog)
-        expect(createdStatus).toEqual(HTTPStatusCodesEnum.Bad_Request_400)
+        expect(createdStatus).toEqual(HttpStatusCodes.Bad_Request_400)
         expect(body).toEqual(expect.any(Object))
         // PUT
         const {status:updatedStatus} = await blogsTestManager.updateBlog(dataToCreateOrUpdateBlog, body.id)
-        expect(updatedStatus).toEqual(HTTPStatusCodesEnum.Bad_Request_400)
+        expect(updatedStatus).toEqual(HttpStatusCodes.Bad_Request_400)
 
 
         // Incorrect description
@@ -263,11 +264,11 @@ describe('hw4 /blogs', () => {
         }
         // POST
         const {status: createdStats1, body:body1} = await blogsTestManager.createBlog(dataToCreateOrUpdateBlog1)
-        expect(createdStats1).toEqual(HTTPStatusCodesEnum.Bad_Request_400)
+        expect(createdStats1).toEqual(HttpStatusCodes.Bad_Request_400)
         expect(body1).toEqual(expect.any(Object))
         // PUT
         const {status:updatedStatus1} = await blogsTestManager.updateBlog(dataToCreateOrUpdateBlog1, body1.id)
-        expect(updatedStatus1).toEqual(HTTPStatusCodesEnum.Bad_Request_400)
+        expect(updatedStatus1).toEqual(HttpStatusCodes.Bad_Request_400)
 
         // Incorrect webSiteUrl
         const dataToCreateOrUpdateBlog2: BlogInputModel = {
@@ -277,11 +278,11 @@ describe('hw4 /blogs', () => {
         }
         // POST
         const {status: createdStatus2, body:body2} = await blogsTestManager.createBlog(dataToCreateOrUpdateBlog2)
-        expect(createdStatus2).toEqual(HTTPStatusCodesEnum.Bad_Request_400)
+        expect(createdStatus2).toEqual(HttpStatusCodes.Bad_Request_400)
         expect(body2).toEqual(expect.any(Object))
         // PUT
         const {status:updatedStatus2} = await blogsTestManager.updateBlog(dataToCreateOrUpdateBlog2, body2.id)
-        expect(updatedStatus2).toEqual(HTTPStatusCodesEnum.Bad_Request_400)
+        expect(updatedStatus2).toEqual(HttpStatusCodes.Bad_Request_400)
     })
     it('POST =/blogs/{blogId}/posts= should not create a post for specific blog with validation error, status 400', async () => {
         // Incorrect title
@@ -293,7 +294,7 @@ describe('hw4 /blogs', () => {
         }
         // POST
         const {status:incorrectTitlePOSTStatus} = await blogsTestManager.createPostForSpecificBlog(createdEntity.id, dataToCreatePostOfBlog)
-        expect(incorrectTitlePOSTStatus).toEqual(HTTPStatusCodesEnum.Bad_Request_400)
+        expect(incorrectTitlePOSTStatus).toEqual(HttpStatusCodes.Bad_Request_400)
 
 
         // Incorrect shortDescription
@@ -305,7 +306,7 @@ describe('hw4 /blogs', () => {
         }
         // POST
         const {status:incorrectShortDescriptionPOSTStatus} = await blogsTestManager.createPostForSpecificBlog(createdEntity.id,dataToCreatePostOfBlog1)
-        expect(incorrectShortDescriptionPOSTStatus).toEqual(HTTPStatusCodesEnum.Bad_Request_400)
+        expect(incorrectShortDescriptionPOSTStatus).toEqual(HttpStatusCodes.Bad_Request_400)
 
         // Incorrect content
         const incorrectContent: string  = '10'.repeat(1000)
@@ -316,7 +317,7 @@ describe('hw4 /blogs', () => {
         }
         // POST
         const {status:incorrectContentPOSTStatus} = await blogsTestManager.createPostForSpecificBlog(createdEntity.id,dataToCreatePostOfBlog2)
-        expect(incorrectContentPOSTStatus).toEqual(HTTPStatusCodesEnum.Bad_Request_400)
+        expect(incorrectContentPOSTStatus).toEqual(HttpStatusCodes.Bad_Request_400)
     })
     it('PUT, DELETE, GET, should return error if id was not found; status 404', async () => {
         const dataToUpdateBlog: BlogInputModel = {
@@ -326,19 +327,19 @@ describe('hw4 /blogs', () => {
         }
         // PUT
         const {status} = await blogsTestManager.updateBlog(dataToUpdateBlog, 'kjadfghlkjahfg')
-        expect(status).toEqual(HTTPStatusCodesEnum.Not_Found_404)
+        expect(status).toEqual(HttpStatusCodes.Not_Found_404)
 
         // DELETE
         const {status: status1} = await blogsTestManager.deleteBlogById('fdgjhnerkjlng')
-        expect(status1).toEqual(HTTPStatusCodesEnum.Not_Found_404)
+        expect(status1).toEqual(HttpStatusCodes.Not_Found_404)
 
         // GET
         const {status: status2} = await blogsTestManager.getBlogById('sdfgsnbrthtyrhkm')
-        expect(status2).toEqual(HTTPStatusCodesEnum.Not_Found_404)
+        expect(status2).toEqual(HttpStatusCodes.Not_Found_404)
     })
     it('GET, should return all blogs in DB, status 200 ', async () => {
         const {status, body:allBlogs} = await blogsTestManager.getAllBlogs()
-        expect(status).toEqual(HTTPStatusCodesEnum.OK_200)
+        expect(status).toEqual(HttpStatusCodes.OK_200)
         expect(allBlogs).toEqual({
                 pagesCount: 1,
                 page: 1,

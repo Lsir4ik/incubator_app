@@ -1,12 +1,12 @@
-import {SETTINGS} from "./settings";
 import {app} from "./app";
-import {runDb} from "./db/db";
+import {db} from "./db";
+import {appConfig} from "./common/config/config";
 
 
 const startApp = async () => {
-    await runDb()
-    app.listen(SETTINGS.PORT, () => {
-        console.log(`Server started at port ${SETTINGS.PORT}`);
+    await db.run(appConfig.MONGO_URL)
+    app.listen(appConfig.PORT, () => {
+        console.log(`Server started at port ${appConfig.PORT}`);
     });
 }
 

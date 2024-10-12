@@ -1,9 +1,9 @@
 import {agent} from "supertest";
 import {app} from "../../src/app";
-import {SETTINGS} from "../../src/settings";
-import {BlogInputModel} from "../../src/models/blogs/BlogInputModel";
-import {users} from "../../src/middlewares/authorization.middleware";
-import {BlogPostInputModel} from "../../src/models/blogs/BlogPostInputModel";
+import {BlogInputModel} from "../../src/blogs/types/BlogInputModel";
+import {users} from "../../src/auth/guards/base.auth.guard";
+import {BlogPostInputModel} from "../../src/blogs/types/BlogPostInputModel";
+import {routerPaths} from "../../src/common/path/path";
 
 const req = agent(app)
 
@@ -26,16 +26,16 @@ export const blogsTestManager = {
     //     &pageSize=${pageSize}`)
     // },
     async getAllBlogs() {
-        return req.get(SETTINGS.PATH.BLOGS)
+        return req.get(routerPaths.blogs)
     },
     async getBlogById(id: string) {
-        return req.get(`${SETTINGS.PATH.BLOGS}/${id}`)
+        return req.get(`${routerPaths.blogs}/${id}`)
     },
     async createBlog(data: BlogInputModel) {
-        return req.post(SETTINGS.PATH.BLOGS).set({'Authorization': 'Basic ' + codeAuth}).send(data)
+        return req.post(routerPaths.blogs).set({'Authorization': 'Basic ' + codeAuth}).send(data)
     },
     async createPostForSpecificBlog(blogId: string, data: BlogPostInputModel) {
-        return req.post( `${SETTINGS.PATH.BLOGS}/${blogId}/posts`).set({'Authorization': 'Basic ' + codeAuth}).send(data)
+        return req.post( `${routerPaths.blogs}/${blogId}/posts`).set({'Authorization': 'Basic ' + codeAuth}).send(data)
     },
     // async getPostsOfSpecificBlog(blogId: string,
     //                              pageNumber: string = '1',
@@ -49,15 +49,15 @@ export const blogsTestManager = {
     //     &sortDirection=${sortDirection}`)
     // },
     async getPostsOfSpecificBlog(blogId: string) {
-        return req.get(`${SETTINGS.PATH.BLOGS}/${blogId}/posts`)
+        return req.get(`${routerPaths.blogs}/${blogId}/posts`)
     },
     async updateBlog(data: BlogInputModel, id: string) {
-        return req.put(`${SETTINGS.PATH.BLOGS}/${id}`).set({'Authorization': 'Basic ' + codeAuth}).send(data)
+        return req.put(`${routerPaths.blogs}/${id}`).set({'Authorization': 'Basic ' + codeAuth}).send(data)
     },
     async deleteBlogById(id: string) {
-        return req.delete(`${SETTINGS.PATH.BLOGS}/${id}`).set({'Authorization': 'Basic ' + codeAuth})
+        return req.delete(`${routerPaths.blogs}/${id}`).set({'Authorization': 'Basic ' + codeAuth})
     },
     async deleteAllBlogs() {
-        return req.delete(SETTINGS.PATH.BLOGS)
+        return req.delete(routerPaths.blogs)
     }
 }
