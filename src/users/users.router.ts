@@ -13,7 +13,7 @@ import {IdType} from "../common/types/id";
 import {APIErrorResult} from "../common/types/ErrorModels";
 
 export const userRouter = Router();
-// TODO куда убрать?
+//TODO куда убрать?
 const uniqueErr = {
     errorMessages: [
         {field: 'email or login', message: 'email and login should be unique'}

@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "nodemon --inspect dist/index.js",
     "watch": "tsc -w",
-    "jest": "jest -i"
+    "jest": "jest --config --runInBand --detectOpenHandles --forceExit"
   },
   "dependencies": {
     "@types/bcrypt": "^5.0.2",

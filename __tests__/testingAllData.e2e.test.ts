@@ -1,14 +1,11 @@
-import {agent} from "supertest";
+import request from "supertest";
 import {app} from "../src/app";
-import {blogsTestManager} from "./blogs/blogs.test.helpers";
-import {postsTestManager} from "./posts/posts.test.helpers";
 import {routerPaths} from "../src/common/path/path";
 import {HttpStatusCodes} from "../src/common/types/httpsStatusCodes";
 import {MongoMemoryServer} from "mongodb-memory-server";
 import {db} from "../src/db";
-import {usersTestManager} from "./users/users.test.helpers";
+import {ADMIN_LOGIN, ADMIN_PASS} from "../src/auth/guards/base.auth.guard";
 
-const req = agent(app)
 
 describe('/testing/all-data', () => {
     beforeAll(async () => {
@@ -23,17 +20,17 @@ describe('/testing/all-data', () => {
     })
 
     it('DELETE, should remove all data, status 204', async () => {
-        await req
+        await request(app)
             .delete(routerPaths.testing)
             .expect(HttpStatusCodes.No_Content_204)
 
-        const resBlogs = await blogsTestManager.getAllBlogs()
+        const resBlogs = await request(app).get(routerPaths.blogs)
         expect(resBlogs.body.items.length).toEqual(0);
 
-        const resPosts = await postsTestManager.getAllPosts()
+        const resPosts = await request(app).get(routerPaths.posts)
         expect(resPosts.body.items.length).toEqual(0);
 
-        const resUsers = await usersTestManager.getAllUsers()
-        expect(resBlogs.body.items.length).toEqual(0);
+        const resUsers = await request(app).get(routerPaths.users).auth(ADMIN_LOGIN, ADMIN_PASS, {type: 'basic'})
+        expect(resUsers.body.items.length).toEqual(0);
     })
 })
