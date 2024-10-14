@@ -3,6 +3,7 @@ import {appConfig} from "./common/config/config";
 import {BlogDbModel} from "./blogs/types/BlogDbModel";
 import {PostDbModel} from "./posts/types/PostDbModel";
 import {UserDbModel} from "./users/types/UserDbModel";
+import {CommentDBModel} from "./comments/types/CommentDBModel";
 
 
 export const db = {
@@ -43,7 +44,8 @@ export const db = {
         return {
             blogsCollection: this.getDbName().collection<BlogDbModel>('blogs'),
             postsCollection: this.getDbName().collection<PostDbModel>('posts'),
-            usersCollection: this.getDbName().collection<UserDbModel>('users')
+            usersCollection: this.getDbName().collection<UserDbModel>('users'),
+            commentsCollection: this.getDbName().collection<CommentDBModel>('comments'),
         }
     }
 }

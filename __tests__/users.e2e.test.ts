@@ -82,10 +82,9 @@ describe('Users', () => {
         const createdUser = await usersTestManager.createUser()
         const dataToLogin: LoginInputModel = {
             loginOrEmail: createdUser.login,
-            password: 'qwrt'
+            password: 'qwt'
         }
         await request(app).post(routerPaths.auth.login)
-            .auth(ADMIN_LOGIN, ADMIN_PASS, {type: 'basic'})
             .send(dataToLogin)
             .expect(HttpStatusCodes.Unauthorized_401)
 
@@ -147,7 +146,7 @@ describe('Users', () => {
             loginOrEmail: createdUser.login,
             password: 'qwerty',
         })
-            .expect(HttpStatusCodes.No_Content_204)
+            .expect(HttpStatusCodes.OK_200)
     });
     it('DELETE =/users/{id}= should delete user by id, status 204', async () => {
         const createdUser = await usersTestManager.createUser()

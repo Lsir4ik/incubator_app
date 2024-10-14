@@ -21,7 +21,12 @@ export const postsService = {
     async updatePost(id: string, dataToUpdate: PostInputModel): Promise<boolean> {
         return postsRepository.updatePost(id, dataToUpdate)
     },
+    async isPostExist(id: string): Promise<boolean> {
+         const foundPost = postsRepository.findPostById(id)
+         return !!foundPost
+    },
     async deletePostById(id: string): Promise<boolean> {
         return postsRepository.deletePostById(id)
-    }
+    },
+
 }

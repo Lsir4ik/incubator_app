@@ -19,7 +19,7 @@ export const postsQueryRepository = {
     },
     async findPostById(id: string): Promise<PostViewModel | null> {
         const foundPost = await db.getCollection().postsCollection.findOne({_id: new ObjectId(id)})
-        return foundPost ? this._postViewTypeMapping(foundPost): null
+        return foundPost ? this._postViewTypeMapping(foundPost) : null
     },
     async findPostsPagination(pageNumber?: string,
                               pageSize?: string,

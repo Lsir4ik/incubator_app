@@ -1,6 +1,6 @@
 import {db} from "../db";
 import {UserDbModel} from "./types/UserDbModel";
-import {ObjectId} from "mongodb";
+import {ObjectId, WithId} from "mongodb";
 
 export const usersRepository = {
     async createUser(newUser: UserDbModel): Promise<string> {
@@ -11,12 +11,18 @@ export const usersRepository = {
         const deleteResult = await db.getCollection().usersCollection.deleteOne({ _id: new ObjectId(id) })
         return deleteResult.deletedCount === 1
     },
-    async findUserById(id: string): Promise<UserDbModel | null> {
+    async findUserById(id: string): Promise<WithId<UserDbModel> | null> {
       if (!ObjectId.isValid(id)) return null
         return db.getCollection().usersCollection.findOne({ _id: new ObjectId(id) })
     },
-    async findUserByLoginOrEmail(loginOrEmail: string): Promise<UserDbModel | null> {
-        return db.getCollection().usersCollection.findOne(
-            {$or: [{login: loginOrEmail}, {email: loginOrEmail}]})
+    async findUserByLoginOrEmail(loginOrEmail: string): Promise<WithId<UserDbModel> | null> {
+        return db.getCollection().usersCollection.findOne({
+            $or: [{login: loginOrEmail}, {email: loginOrEmail}]
+        })
+    },
+    async doesExistById(id: string): Promise<boolean> {
+        if (!ObjectId.isValid(id)) return false
+        const foundUser = await db.getCollection().usersCollection.findOne({ _id: new ObjectId(id) })
+        return !! foundUser
     }
 }

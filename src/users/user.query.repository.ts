@@ -4,6 +4,7 @@ import {UserDbModel} from "./types/UserDbModel";
 import {db} from "../db";
 import {UserViewModel} from "./types/UserViewModel";
 import {ObjectId, WithId} from "mongodb";
+import {MeViewModel} from "./types/MeViewModel";
 
 
 export const usersQueryRepository = {
@@ -18,6 +19,15 @@ export const usersQueryRepository = {
     async findUserById(id: string): Promise<UserViewModel | null> {
         const foundUser = await db.getCollection().usersCollection.findOne({_id: new ObjectId(id)})
         return foundUser ? this._userViewTypeMapping(foundUser) : null
+    },
+    async findMeById(id: string): Promise<MeViewModel | null> {
+        const me = await db.getCollection().usersCollection.findOne({_id: new ObjectId(id)})
+        if (!me) return null
+        return {
+            email: me.email,
+            login: me.login,
+            userId: id
+        }
     },
     async findUsersPagination(sortBy?: string,
                               sortDirection?: string,

@@ -21,7 +21,7 @@ export const postsTestManager = {
             blogId: dto.blogId
         })
             .expect(HttpStatusCodes.Created_201)
-        return (res.body)
+        return res.body
     },
     async createPosts(blogId: string, count: number) {
         const posts = []

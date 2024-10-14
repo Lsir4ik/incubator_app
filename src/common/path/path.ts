@@ -1,9 +1,12 @@
 export const routerPaths = {
-    users: '/hometask_05/api/users',
+    common: '/',
+    users: '/hometask_06/api/users',
     auth: {
-        login: '/hometask_05/api/auth/login',
+        login: '/hometask_06/api/auth/login',
+        me: '/hometask_06/api/auth/me',
     },
-    testing: '/hometask_05/api/testing/all-data',
-    blogs: '/hometask_05/api/blogs',
-    posts: '/hometask_05/api/posts',
+    testing: '/hometask_06/api/testing/all-data',
+    blogs: '/hometask_06/api/blogs',
+    posts: '/hometask_06/api/posts',
+    comments: '/hometask_06/api/comments',
 }

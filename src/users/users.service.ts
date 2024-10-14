@@ -1,8 +1,7 @@
 import {UserInputModel} from "./types/UserInputModel";
 import {usersRepository} from "./users.repository";
-import {LoginInputModel} from "../auth/types/LoginInputModel";
 import {UserDbModel} from "./types/UserDbModel";
-import {bcryptService} from "../adapters/bcrypt.service";
+import {bcryptService} from "../common/adapters/bcrypt.service";
 
 export const usersService = {
     async createUser(dataToCreate: UserInputModel): Promise<string | null> {
@@ -30,10 +29,4 @@ export const usersService = {
         return usersRepository.deleteUserByID(id);
     },
 
-    async checkCredentials(loginData: LoginInputModel): Promise<boolean> {
-        const foundUser = await usersRepository.findUserByLoginOrEmail(loginData.loginOrEmail)
-        if (!foundUser) return false
-
-        return bcryptService.checkPassword(loginData.password, foundUser.passwordHash)
-    }
 }

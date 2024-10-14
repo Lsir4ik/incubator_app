@@ -2,6 +2,7 @@ import {UserInputModel} from "../../src/users/types/UserInputModel";
 import {BlogInputModel} from "../../src/blogs/types/BlogInputModel";
 import {PostInputModel} from "../../src/posts/types/PostInputModel";
 import {BlogPostInputModel} from "../../src/blogs/types/BlogPostInputModel";
+import {CommentInputModel} from "../../src/comments/types/CommentInputModel";
 
 export const testDtosCreator = {
     // ---USERS---
@@ -37,6 +38,13 @@ export const testDtosCreator = {
             shortDescription: shortDescription ?? 'testPostShortDescription',
             content: content ?? 'testPostContent',
             blogId,
+        }
+    },
+
+    // ---Comments---
+    createCommentDto({content}: {content?: string}): CommentInputModel {
+        return {
+            content:  content ?? 'some test content has 20 symbols at least',
         }
     }
 }
