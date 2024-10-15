@@ -26,7 +26,7 @@ describe('Comments', () => {
         done()
     })
 
-    it.skip('+POST =/posts/{postID}/comments= should create comment for existing post, status 201', async () => {
+    it('+POST =/posts/{postID}/comments= should create comment for existing post, status 201', async () => {
         const {createdBlog, createdPost, createdUser, token} = await commentTestManager.createAllEntityFlow()
         const commentDto = testDtosCreator.createCommentDto({})
 
@@ -43,7 +43,7 @@ describe('Comments', () => {
             createdAt: expect.any(String),
         })
     })
-    it.skip('+GET =/posts/{postID}/comments= should return all comment pagination, status 200', async () => {
+    it('+GET =/posts/{postID}/comments= should return all comment pagination, status 200', async () => {
         const {createdBlog, createdPost, createdUser, token} = await commentTestManager.createAllEntityFlow()
         await commentTestManager.createComments(createdPost.id, 20, token)
 
@@ -73,7 +73,7 @@ describe('Comments', () => {
             ]
         })
     })
-    it.skip('+PUT and +GET by id =/comments/{commentId}= should return error with incorrect input data, status 400', async () => {
+    it('+PUT and +GET by id =/comments/{commentId}= should return error with incorrect input data, status 400', async () => {
         const {createdBlog, createdPost, createdUser, token} = await commentTestManager.createAllEntityFlow()
         const createdComment = await commentTestManager.createComment(createdPost.id,token.accessToken)
 
@@ -96,7 +96,7 @@ describe('Comments', () => {
             createdAt: expect.any(String),
         })
     })
-    it.skip('-DELETE, PUT =/comments/{commentId}= should return an error, if id not found, status 404', async () => {
+    it('-DELETE, PUT =/comments/{commentId}= should return an error, if id not found, status 404', async () => {
         const {createdBlog, createdPost, createdUser, token} = await commentTestManager.createAllEntityFlow()
         const createdComment = await commentTestManager.createComment(createdPost.id,token.accessToken)
         const commentDto = testDtosCreator.createCommentDto({content: 'some test_UPD content has 20 symbols at least'})
@@ -124,7 +124,7 @@ describe('Comments', () => {
             .send(commentDto.content)
             .expect(HttpStatusCodes.Unauthorized_401)
     })
-    it.skip('-DELETE, PUT =/comments/{commentId}= should return an error with access denied, status 403', async () => {
+    it('-DELETE, PUT =/comments/{commentId}= should return an error with access denied, status 403', async () => {
         const {createdBlog, createdPost, createdUser, token} = await commentTestManager.createAllEntityFlow()
         const createdComment = await commentTestManager.createComment(createdPost.id,token.accessToken)
         const commentDto = testDtosCreator.createCommentDto({content: 'some test_UPD content has 20 symbols at least'})
@@ -152,7 +152,7 @@ describe('Comments', () => {
             .send(commentDto)
             .expect(HttpStatusCodes.Forbidden_403)
     })
-    it.skip('+DELETE =/comments/{commentId}= should delete existing comment by id, status 204', async () => {
+    it('+DELETE =/comments/{commentId}= should delete existing comment by id, status 204', async () => {
         const {createdBlog, createdPost, createdUser, token} = await commentTestManager.createAllEntityFlow()
         const createdComment = await commentTestManager.createComment(createdPost.id,token.accessToken)
 
@@ -161,7 +161,7 @@ describe('Comments', () => {
             .set({'Authorization': 'Bearer ' + token.accessToken})
             .expect(HttpStatusCodes.No_Content_204)
     })
-    it.skip('-POST =/posts/{postID}/comments= should return error with incorrect input data, status 400', async () => {
+    it('-POST =/posts/{postID}/comments= should return error with incorrect input data, status 400', async () => {
         const {createdBlog, createdPost, createdUser, token} = await commentTestManager.createAllEntityFlow()
         const commentDto = testDtosCreator.createCommentDto({content: 'less than 20'})
         await request(app)
@@ -170,7 +170,7 @@ describe('Comments', () => {
             .send(commentDto.content)
             .expect(HttpStatusCodes.Bad_Request_400)
     })
-    it.skip('-PUT =/comments/{commentId}= should return error with incorrect input data, status 400', async () => {
+    it('-PUT =/comments/{commentId}= should return error with incorrect input data, status 400', async () => {
         const {createdBlog, createdPost, createdUser, token} = await commentTestManager.createAllEntityFlow()
         const commentDto = testDtosCreator.createCommentDto({content: 'less than 20'})
         const createdComment = await commentTestManager.createComment(createdPost.id,token.accessToken)

@@ -3,7 +3,7 @@ import {appConfig} from "../config/config";
 
 export const jwtService = {
     async createJWT(userId: string): Promise<string> {
-        return jwt.sign({userId}, appConfig.JWT_SECRET, {expiresIn: "0.2h"})
+        return jwt.sign({userId}, appConfig.JWT_SECRET, {expiresIn: "0.2h"}) // TODO почему не асинхронно подписываем?
     },
     async verifyToken(token: string): Promise<{ userId: string } | null> {
         try {
