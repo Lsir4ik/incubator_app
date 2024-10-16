@@ -33,7 +33,6 @@ describe('Comments', () => {
         const createdCommentRes = await request(app)
             .post(`${routerPaths.posts}/${createdPost.id}/comments`)
             .auth(token.accessToken, {type: 'bearer'})
-            // .set({'Authorization': 'Bearer ' + token.accessToken})
             .send(commentDto)
             .expect(HttpStatusCodes.Created_201)
         expect(createdCommentRes.body).toEqual({
