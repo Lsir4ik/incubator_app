@@ -1,6 +1,7 @@
 import {db} from "../db";
 import {UserDbModel} from "./types/UserDbModel";
 import {ObjectId, WithId} from "mongodb";
+import {UserEmailConfirmation} from "./domain/user.emailConfirmation.entity";
 
 export const usersRepository = {
     async createUser(newUser: UserDbModel): Promise<string> {
@@ -24,5 +25,25 @@ export const usersRepository = {
         if (!ObjectId.isValid(id)) return false
         const foundUser = await db.getCollection().usersCollection.findOne({ _id: new ObjectId(id) })
         return !! foundUser
+    },
+    async findUserByConfirmationCode(code: string): Promise<UserEmailConfirmation | null> {
+        const foundUser = await db.getCollection().usersCollection
+            .findOne({'emailConfirmation.confirmationCode': code})
+        if (!foundUser) return null
+        return {
+            emailConfirmation: {
+                confirmationCode: foundUser.emailConfirmation.confirmationCode,
+                expirationDate: foundUser.emailConfirmation.expirationDate,
+                isConfirmed: foundUser.emailConfirmation.isConfirmed,
+            }
+        }
+    },
+    async confirmEmail(code: string): Promise<boolean> {
+        const isUpdated = await db.getCollection().usersCollection.updateOne({'emailConfirmation.confirmationCode': code}, {
+            $set: {
+                'emailConfirmation.isConfirmed': true
+            }
+        })
+        return isUpdated.matchedCount === 1
     }
 }

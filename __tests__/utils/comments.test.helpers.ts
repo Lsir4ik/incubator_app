@@ -12,6 +12,9 @@ import {LoginSuccessViewModel} from "../../src/auth/types/LoginSuccessViewModel"
 
 export const commentTestManager = {
     async createAllEntityFlow() {
+        /**
+         *
+         */
         const createdBlog = await blogsTestManager.createBlog()
         const createdPost = await postsTestManager.createPost(createdBlog.id)
         const createdUser = await usersTestManager.createUser()

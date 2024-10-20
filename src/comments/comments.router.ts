@@ -8,7 +8,7 @@ import {commentsService} from "./comments.service";
 import {HttpStatusCodes} from "../common/types/httpsStatusCodes";
 import {commentsQueryRepository} from "./comments.query.repository";
 
-
+// TODO refactor with codes types
 export const commentsRouter = Router();
 
 commentsRouter.put('/:id', authBearerGuard, updateCommentValidator, async (req:RequestWithParamsAndBody<IdType, CommentInputModel>, res: Response) => {
