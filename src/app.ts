@@ -10,7 +10,7 @@ import {commentsRouter} from "./comments/comments.router";
 
 export const app = express();
 
-// Middleware
+// Middlewares
 app.use(express.json()); // body и query в реквестах
 
 // Routes
