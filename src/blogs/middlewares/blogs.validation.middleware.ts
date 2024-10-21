@@ -4,19 +4,19 @@ import {contentValidation, shortDescriptionValidation, titleValidation} from "..
 
 const nameValidation = body('name').notEmpty().isString().trim().isLength({max: 15})
 const descriptionValidation = body('description').notEmpty().isString().trim().isLength({max: 500})
-const webSiteUrlValidation = body('webSiteUrl').isURL()
+const websiteUrlValidation = body('websiteUrl').notEmpty().isString().trim().isLength({max: 100}).isURL()
 
 export const createBlogValidation = [
     nameValidation,
     descriptionValidation,
-    webSiteUrlValidation,
+    websiteUrlValidation,
     inputValidationMiddleware
 ]
 
 export const updateBlogValidation = [
     nameValidation,
     descriptionValidation,
-    webSiteUrlValidation,
+    websiteUrlValidation,
     inputValidationMiddleware
 ]
 

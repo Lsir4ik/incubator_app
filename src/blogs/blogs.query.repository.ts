@@ -14,7 +14,7 @@ export const blogsQueryRepository = {
             id: blog._id.toString(),
             name: blog.name,
             description: blog.description,
-            webSiteUrl: blog.webSiteUrl,
+            websiteUrl: blog.websiteUrl,
             createdAt: blog.createdAt.toISOString(),
             isMembership: blog.isMembership,
         }

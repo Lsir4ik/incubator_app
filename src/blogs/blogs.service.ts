@@ -1,6 +1,5 @@
 import {blogsRepository} from "./blogs.repository";
 import {BlogInputModel} from "./types/BlogInputModel";
-import {PostViewModel} from "../posts/types/PostViewModel";
 import {postsRepository} from "../posts/posts.repository";
 import {BlogPostInputModel} from "./types/BlogPostInputModel";
 import {BlogDbModel} from "./types/BlogDbModel";
@@ -11,7 +10,7 @@ export const blogsService = {
         const newBlog: BlogDbModel = {
             name: dataToCreate.name,
             description: dataToCreate.description,
-            webSiteUrl: dataToCreate.webSiteUrl,
+            websiteUrl: dataToCreate.websiteUrl,
             createdAt: new Date(),
             isMembership: false,
         }

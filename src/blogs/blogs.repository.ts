@@ -12,7 +12,7 @@ export const blogsRepository = {
                 id: fondBlog._id.toString(),
                 name: fondBlog.name,
                 description: fondBlog.description,
-                webSiteUrl: fondBlog.webSiteUrl,
+                websiteUrl: fondBlog.websiteUrl,
                 createdAt: fondBlog.createdAt,
                 isMembership: fondBlog.isMembership,
             }
@@ -28,7 +28,7 @@ export const blogsRepository = {
             $set: {
                 name: dataToUpdate.name,
                 description: dataToUpdate.description,
-                webSiteUrl: dataToUpdate.webSiteUrl
+                websiteUrl: dataToUpdate.websiteUrl
             }
         })
         return updateResult.matchedCount === 1

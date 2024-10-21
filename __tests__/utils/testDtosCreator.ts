@@ -19,7 +19,7 @@ export const testDtosCreator = {
         return {
             name: name ?? 'testBlog',
             description: description ?? 'testBlogDescription',
-            webSiteUrl: webSiteUrl ?? 'http://testBlog.com',
+            websiteUrl: webSiteUrl ?? 'http://testBlog.com',
         }
     },
     createBlogPostDto({title, shortDescription, content}: {title?: string, shortDescription?: string, content?: string}): BlogPostInputModel {
