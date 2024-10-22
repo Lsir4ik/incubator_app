@@ -34,7 +34,9 @@ export const authService = {
         const isEmailExist = await usersRepository.findUserByLoginOrEmail(email)
         if (isLoginExist || isEmailExist) return {
             status: ResultStatus.BadRequest,
-            errorMessage: 'User with this login data already exists',
+            formatError: {
+                errorMessages: [{message: 'User with this login data already exists', field: 'email'}]
+            },
             data: false
         }
 
@@ -55,16 +57,18 @@ export const authService = {
         }
         // Give it to DB and send email
         const newUserId = await usersRepository.createUser(newUser)
+        // TODO стоит ли убрать await, как обработать catch
         const sendEmailResult = await emailManager
             .sendRegistrationConfirmationEmail(newUser.email, newUser.emailConfirmation.confirmationCode)
-        if (sendEmailResult.status === ResultStatus.ServiceError) {
-            await usersRepository.deleteUserByID(newUserId)
-            return {
-                status: ResultStatus.ServiceError,
-                errorMessage: 'Something went wrong, user was deleted',
-                data: false
-            }
-        }
+        // TODO уточнить на поддержке
+        // if (sendEmailResult.status === ResultStatus.ServiceError) {
+        //     await usersRepository.deleteUserByID(newUserId)
+        //     return {
+        //         status: ResultStatus.ServiceError,
+        //         errorMessage: 'Something went wrong, user was deleted',
+        //         data: false
+        //     }
+        // }
         return {
             status: ResultStatus.Success,
             data: true
@@ -72,14 +76,25 @@ export const authService = {
     },
     async confirmRegistration(code: string): Promise<Result<boolean>> {
         const foundUser = await usersRepository.findUserByConfirmationCode(code)
+        if (foundUser?.emailConfirmation.isConfirmed) return {
+            status: ResultStatus.BadRequest,
+            formatError: {
+                errorMessages: [{message: 'User already confirmed', field: 'code'}]
+            },
+            data: false
+        }
         if (!foundUser) return {
-            status: ResultStatus.NotFound,
-            errorMessage: 'User with this confirmation code does not exist',
+            status: ResultStatus.BadRequest,
+            formatError: {
+                errorMessages: [{message: 'User with this confirmation code does not exist', field: 'code'}]
+            },
             data: false
         }
         if (foundUser.emailConfirmation.expirationDate < new Date()) return {
-            status: ResultStatus.NotFound,
-            errorMessage: 'Code was expired',
+            status: ResultStatus.BadRequest,
+            formatError: {
+                errorMessages: [{message: 'Code was expired', field: 'code'}]
+            },
             data: false
         }
         await usersRepository.confirmEmail(code)
@@ -90,7 +105,7 @@ export const authService = {
         }
     },
     async registrationEmailResending(email: string): Promise<Result<boolean>> {
-        // TODO уточнить на занятии нужна ли эта проверка
+        // TODO уточнить на поддержке нужна ли эта проверка
         const foundUser = await usersRepository.findUserByLoginOrEmail(email)
         if (!foundUser) return {
             status: ResultStatus.NotFound,
@@ -99,14 +114,15 @@ export const authService = {
         }
         const sendEmailResult = await emailManager
             .sendRegistrationConfirmationEmail(email, foundUser.emailConfirmation.confirmationCode)
-        if (sendEmailResult.status === ResultStatus.ServiceError) {
-            await usersRepository.deleteUserByID(new ObjectId(foundUser._id).toString())
-            return {
-                status: ResultStatus.ServiceError,
-                errorMessage: 'Something went wrong, user was deleted',
-                data: false
-            }
-        }
+        // TODO уточнить на поддержке
+        // if (sendEmailResult.status === ResultStatus.ServiceError) {
+        //     await usersRepository.deleteUserByID(new ObjectId(foundUser._id).toString())
+        //     return {
+        //         status: ResultStatus.ServiceError,
+        //         errorMessage: 'Something went wrong, user was deleted',
+        //         data: false
+        //     }
+        // }
         return {
             status: ResultStatus.Success,
             data: true

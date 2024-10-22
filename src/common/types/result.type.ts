@@ -1,6 +1,9 @@
+import {APIErrorResult} from "./ErrorModels";
+
 export type Result <T> = {
     status: ResultStatus
     errorMessage?: string
+    formatError?: APIErrorResult
     data: T
 }
 
