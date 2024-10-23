@@ -55,11 +55,12 @@ export const authService = {
                 isConfirmed: false
             }
         }
+        console.log(newUser.emailConfirmation.confirmationCode)
+        console.log(newUser.emailConfirmation.confirmationCode)
         // Give it to DB and send email
         const newUserId = await usersRepository.createUser(newUser)
         // TODO стоит ли убрать await, как обработать catch
-        const sendEmailResult = await emailManager
-            .sendRegistrationConfirmationEmail(newUser.email, newUser.emailConfirmation.confirmationCode)
+        //emailManager.sendRegistrationConfirmationEmail(newUser.email, newUser.emailConfirmation.confirmationCode)
         // TODO уточнить на поддержке
         // if (sendEmailResult.status === ResultStatus.ServiceError) {
         //     await usersRepository.deleteUserByID(newUserId)
@@ -76,17 +77,17 @@ export const authService = {
     },
     async confirmRegistration(code: string): Promise<Result<boolean>> {
         const foundUser = await usersRepository.findUserByConfirmationCode(code)
-        if (foundUser?.emailConfirmation.isConfirmed) return {
-            status: ResultStatus.BadRequest,
-            formatError: {
-                errorMessages: [{message: 'User already confirmed', field: 'code'}]
-            },
-            data: false
-        }
         if (!foundUser) return {
             status: ResultStatus.BadRequest,
             formatError: {
                 errorMessages: [{message: 'User with this confirmation code does not exist', field: 'code'}]
+            },
+            data: false
+        }
+        if (foundUser.emailConfirmation.isConfirmed) return {
+            status: ResultStatus.BadRequest,
+            formatError: {
+                errorMessages: [{message: 'User already confirmed', field: 'code'}]
             },
             data: false
         }
@@ -109,11 +110,19 @@ export const authService = {
         const foundUser = await usersRepository.findUserByLoginOrEmail(email)
         if (!foundUser) return {
             status: ResultStatus.NotFound,
-            errorMessage: 'User with this email does not exist',
+            formatError: {
+                errorMessages: [{message: 'User with this email does not exist', field: 'email'}]
+            },
             data: false
         }
-        const sendEmailResult = await emailManager
-            .sendRegistrationConfirmationEmail(email, foundUser.emailConfirmation.confirmationCode)
+        if (foundUser.emailConfirmation.isConfirmed) return {
+            status: ResultStatus.BadRequest,
+            formatError: {
+                errorMessages: [{message: 'User already confirmed', field: 'code'}]
+            },
+            data: false
+        }
+        emailManager.sendRegistrationConfirmationEmail(email, foundUser.emailConfirmation.confirmationCode)
         // TODO уточнить на поддержке
         // if (sendEmailResult.status === ResultStatus.ServiceError) {
         //     await usersRepository.deleteUserByID(new ObjectId(foundUser._id).toString())

@@ -25,20 +25,20 @@ authRouter.post(routerPaths.auth.login, authValidation, async (req: RequestWithB
     if (!accessToken) return res.sendStatus(HttpStatusCodes.Unauthorized_401)
     return res.status(HttpStatusCodes.OK_200).send({accessToken})
 })
-authRouter.post(routerPaths.auth.registrationConfirmation, registrationConfirmationValidation, async (req: RequestWithQuery<RegistrationConfirmationCodeModel>,res: Response) => {
-    const confirmResult = await authService.confirmRegistration(req.query.code)
-    if (!confirmResult.data) return res.status(HttpStatusCodes.No_Content_204)
-    return res.status(HttpStatusCodes.Bad_Request_400).send(confirmResult.formatError!.errorMessages)
+authRouter.post(routerPaths.auth.registrationConfirmation, registrationConfirmationValidation, async (req: RequestWithBody<RegistrationConfirmationCodeModel>,res: Response) => {
+    const confirmResult = await authService.confirmRegistration(req.body.code)
+    if (!confirmResult.data) return res.status(HttpStatusCodes.Bad_Request_400).json(confirmResult.formatError)
+    return res.sendStatus(HttpStatusCodes.No_Content_204)
 })
 authRouter.post(routerPaths.auth.registration, registrationValidation, async (req:RequestWithBody<UserInputModel>,res: Response) => {
     const registrationResult = await authService.registerUser(req.body)
-    if(!registrationResult.data) return res.sendStatus(HttpStatusCodes.Bad_Request_400).send(registrationResult.formatError!.errorMessages)
+    if(!registrationResult.data) return res.status(HttpStatusCodes.Bad_Request_400).json(registrationResult.formatError)
     return res.sendStatus(HttpStatusCodes.No_Content_204)
 })
 authRouter.post(routerPaths.auth.registrationEmailResending, resendingEmailValidation, async (req:RequestWithBody<RegistrationEmailResending>,res: Response) => {
     const resendingEmailConfirmationResult = await authService.registrationEmailResending(req.body.email)
-    if (!resendingEmailConfirmationResult) return res.status(HttpStatusCodes.Bad_Request_400)
-    return res.status(HttpStatusCodes.No_Content_204)
+    if (!resendingEmailConfirmationResult.data) return res.status(HttpStatusCodes.Bad_Request_400).json(resendingEmailConfirmationResult.formatError)
+    return res.sendStatus(HttpStatusCodes.No_Content_204)
 })
 authRouter.get(routerPaths.auth.me, authBearerGuard, async (req: Request, res: Response<MeViewModel>) => {
     const me: MeViewModel | null = await usersQueryRepository.findMeById(req.user!.id)
