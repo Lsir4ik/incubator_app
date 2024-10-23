@@ -127,7 +127,7 @@ describe('Comments', () => {
         const {createdBlog, createdPost, createdUser, token} = await commentTestManager.createAllEntityFlow()
         const createdComment = await commentTestManager.createComment(createdPost.id,token.accessToken)
         const commentDto = testDtosCreator.createCommentDto({content: 'some test_UPD content has 20 symbols at least'})
-        const arrCreatedUsers = await usersTestManager.createUsers(2) // TODO может быть ошибка
+        const arrCreatedUsers = await usersTestManager.createUsers(2)
 
 
         // Auth get token

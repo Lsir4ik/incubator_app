@@ -17,3 +17,6 @@ export const appConfig = {
         }
     }
 }
+
+// EMAIL_PASSWORD=IncubatorTest123
+// EMAIL=incubatorslazarev@gmail.com

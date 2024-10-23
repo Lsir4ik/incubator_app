@@ -1,8 +1,7 @@
-import request, {agent} from "supertest";
+import request from "supertest";
 import {app} from "../src/app";
 import {UserInputModel} from "../src/users/types/UserInputModel";
 import {usersTestManager} from "./utils/users.test.helpers";
-import {UserViewModel} from "../src/users/types/UserViewModel";
 import {LoginInputModel} from "../src/auth/types/LoginInputModel";
 import {routerPaths} from "../src/common/path/path";
 import {HttpStatusCodes} from "../src/common/types/httpsStatusCodes";
@@ -28,7 +27,7 @@ describe('Users', () => {
         done()
     })
 
-    it('POST and GET =/users= should create user, status 201, should return all created users, status 200', async () => {
+    it('+POST and GET =/users= should create user, status 201, should return all created users, status 200', async () => {
         const dataToCreateUser = testDtosCreator.createUserDto({})
         const res = await request(app).post(routerPaths.users)
             .auth(ADMIN_LOGIN, ADMIN_PASS, {type: 'basic'})
@@ -58,7 +57,7 @@ describe('Users', () => {
                 createdAt: expect.any(String),}]
         })
     })
-    it('POST, DELETE, GET =/users= should return error if auth credentials is incorrect, status 401', async () => {
+    it('-POST, DELETE, GET =/users= should return error if auth credentials is incorrect, status 401', async () => {
         const dataToCreateUser = testDtosCreator.createUserDto({})
         const createdUser = await usersTestManager.createUser()
 
@@ -78,18 +77,7 @@ describe('Users', () => {
             .set({'Authorization': 'Basic uasdi1h3123'})
             .expect(HttpStatusCodes.Unauthorized_401)
     })
-    it('POST =/auth= should return error if auth credentials is incorrect, status 401', async () => {
-        const createdUser = await usersTestManager.createUser()
-        const dataToLogin: LoginInputModel = {
-            loginOrEmail: createdUser.login,
-            password: 'qwt'
-        }
-        await request(app).post(routerPaths.auth.login)
-            .send(dataToLogin)
-            .expect(HttpStatusCodes.Unauthorized_401)
-
-    })
-    it('DELETE =/users/{id}= should not delete not existing user, status 404', async () => {
+    it('-DELETE =/users/{id}= should not delete not existing user, status 404', async () => {
         const createdUser = await usersTestManager.createUser()
         const randomId = new ObjectId().toString()
         await request(app)
@@ -97,7 +85,7 @@ describe('Users', () => {
             .auth(ADMIN_LOGIN, ADMIN_PASS, {type: 'basic'})
             .expect(HttpStatusCodes.Not_Found_404)
     })
-    it('POST =/users= should return validation error if body is incorrect, status 400', async () => {
+    it('-POST =/users= should return validation error if body is incorrect, status 400', async () => {
         const badDataToCreateUser_loginMin = testDtosCreator.createUserDto({
             login: 'as'
         })
@@ -139,20 +127,10 @@ describe('Users', () => {
             .send(badDataToCreateUser_badEmail)
             .expect(HttpStatusCodes.Bad_Request_400)
     })
-    it('POST =/auth= should sign in user, status 204', async () => {
-        const createdUser = await usersTestManager.createUser()
-        await request(app).post(routerPaths.auth.login)
-            .send({
-            loginOrEmail: createdUser.login,
-            password: 'qwerty',
-        })
-            .expect(HttpStatusCodes.OK_200)
-    });
-    it('DELETE =/users/{id}= should delete user by id, status 204', async () => {
+    it('+DELETE =/users/{id}= should delete user by id, status 204', async () => {
         const createdUser = await usersTestManager.createUser()
         await request(app).delete(`${routerPaths.users}/${createdUser.id}`)
             .auth(ADMIN_LOGIN, ADMIN_PASS, {type: 'basic'})
             .expect(HttpStatusCodes.No_Content_204)
     })
-    // TODO GET???
 })

@@ -1,7 +1,6 @@
 import {LoginInputModel} from "./types/LoginInputModel";
 import {usersRepository} from "../users/users.repository";
 import {bcryptService} from "../common/adapters/bcrypt.service";
-import {ObjectId, WithId} from "mongodb";
 import {UserDbModel} from "../users/types/UserDbModel";
 import {jwtService} from "../common/adapters/jwt.service";
 import {UserInputModel} from "../users/types/UserInputModel";
@@ -11,35 +10,49 @@ import {emailManager} from "../common/managers/email.manager";
 import {add} from "date-fns"
 
 export const authService = {
-    async checkCredentials(loginData: LoginInputModel): Promise<WithId<UserDbModel> | null> {
+    async checkCredentials(loginData: LoginInputModel): Promise<Result<boolean | UserDbModel>> {
         const foundUser = await usersRepository.findUserByLoginOrEmail(loginData.loginOrEmail)
-        if (!foundUser) return null
+        if (!foundUser) return {
+            status: ResultStatus.Unauthorized,
+            errorMessage: 'User not found',
+            data: false
+        }
 
         const isPassValid =  await bcryptService.checkPassword(loginData.password, foundUser.passwordHash)
-        if (!isPassValid) return null
-        // TODO isConfirmed
-        return foundUser
+        if (!isPassValid) return {
+            status: ResultStatus.Unauthorized,
+            errorMessage: 'Password incorrect',
+            data: false
+        }
+        if(!foundUser.emailConfirmation.isConfirmed) return {
+            status: ResultStatus.Unauthorized,
+            errorMessage: 'Email was not confirmed',
+            data: false
+        }
+
+        return {
+            status: ResultStatus.Success,
+            data: foundUser
+        }
     },
     async loginUser(loginData: LoginInputModel): Promise<string | null> {
         const user = await this.checkCredentials(loginData)
-        if (!user) return null
-
-        return jwtService.createJWT(user._id.toString())
+        if (user.status !== ResultStatus.Success) return null
+        const userId = user.data as UserDbModel
+        return jwtService.createJWT(userId.toString())
     },
     async registerUser(loginData: UserInputModel): Promise<Result<boolean>> {
         const {login, email, password} = loginData
-
         // Check unique login or email
         const isLoginExist = await usersRepository.findUserByLoginOrEmail(login)
         const isEmailExist = await usersRepository.findUserByLoginOrEmail(email)
         if (isLoginExist || isEmailExist) return {
             status: ResultStatus.BadRequest,
             formatError: {
-                errorMessages: [{message: 'User with this login data already exists', field: 'email'}]
+                errorsMessages: [{message: 'User with this login data already exists', field: 'email'}]
             },
             data: false
         }
-
         // create user entity and generate confirmationCode with uuidv4
         const passwordHash = await bcryptService.generateHash(password)
         const newUser: UserDbModel = {
@@ -55,21 +68,11 @@ export const authService = {
                 isConfirmed: false
             }
         }
-        console.log(newUser.emailConfirmation.confirmationCode)
-        console.log(newUser.emailConfirmation.confirmationCode)
+        console.log(newUser.emailConfirmation.confirmationCode) // для тестирования
         // Give it to DB and send email
         const newUserId = await usersRepository.createUser(newUser)
-        // TODO стоит ли убрать await, как обработать catch
-        //emailManager.sendRegistrationConfirmationEmail(newUser.email, newUser.emailConfirmation.confirmationCode)
-        // TODO уточнить на поддержке
-        // if (sendEmailResult.status === ResultStatus.ServiceError) {
-        //     await usersRepository.deleteUserByID(newUserId)
-        //     return {
-        //         status: ResultStatus.ServiceError,
-        //         errorMessage: 'Something went wrong, user was deleted',
-        //         data: false
-        //     }
-        // }
+        await emailManager.sendRegistrationConfirmationEmail(newUser.email, newUser.emailConfirmation.confirmationCode)
+            // .catch((er) => console.error('error in send email:', er));
         return {
             status: ResultStatus.Success,
             data: true
@@ -80,21 +83,21 @@ export const authService = {
         if (!foundUser) return {
             status: ResultStatus.BadRequest,
             formatError: {
-                errorMessages: [{message: 'User with this confirmation code does not exist', field: 'code'}]
+                errorsMessages: [{message: 'User with this confirmation code does not exist', field: 'code'}]
             },
             data: false
         }
         if (foundUser.emailConfirmation.isConfirmed) return {
             status: ResultStatus.BadRequest,
             formatError: {
-                errorMessages: [{message: 'User already confirmed', field: 'code'}]
+                errorsMessages: [{message: 'User already confirmed', field: 'code'}]
             },
             data: false
         }
         if (foundUser.emailConfirmation.expirationDate < new Date()) return {
             status: ResultStatus.BadRequest,
             formatError: {
-                errorMessages: [{message: 'Code was expired', field: 'code'}]
+                errorsMessages: [{message: 'Code was expired', field: 'code'}]
             },
             data: false
         }
@@ -106,32 +109,33 @@ export const authService = {
         }
     },
     async registrationEmailResending(email: string): Promise<Result<boolean>> {
-        // TODO уточнить на поддержке нужна ли эта проверка
         const foundUser = await usersRepository.findUserByLoginOrEmail(email)
         if (!foundUser) return {
             status: ResultStatus.NotFound,
             formatError: {
-                errorMessages: [{message: 'User with this email does not exist', field: 'email'}]
+                errorsMessages: [{message: 'User with this email does not exist', field: 'email'}]
             },
             data: false
         }
         if (foundUser.emailConfirmation.isConfirmed) return {
             status: ResultStatus.BadRequest,
             formatError: {
-                errorMessages: [{message: 'User already confirmed', field: 'code'}]
+                errorsMessages: [{message: 'User already confirmed', field: 'code'}]
             },
             data: false
         }
-        emailManager.sendRegistrationConfirmationEmail(email, foundUser.emailConfirmation.confirmationCode)
-        // TODO уточнить на поддержке
-        // if (sendEmailResult.status === ResultStatus.ServiceError) {
-        //     await usersRepository.deleteUserByID(new ObjectId(foundUser._id).toString())
-        //     return {
-        //         status: ResultStatus.ServiceError,
-        //         errorMessage: 'Something went wrong, user was deleted',
-        //         data: false
-        //     }
-        // }
+        const newConfirmationCode  = v4()
+        const updateCodeResult = await usersRepository.updateConfirmationCode(foundUser._id, newConfirmationCode)
+        if (updateCodeResult) {
+            emailManager.sendRegistrationConfirmationEmail(email, newConfirmationCode)
+                .catch((er) => console.error('error in send email:', er));
+        } else {
+            return {
+                status: ResultStatus.ServiceError,
+                errorMessage: 'Update code in DB error',
+                data: false
+            }
+        }
         return {
             status: ResultStatus.Success,
             data: true

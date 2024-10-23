@@ -3,6 +3,6 @@ export type FieldError = {
     field: string | null;
 }
 export type APIErrorResult = {
-    errorMessages: Array<FieldError>;
+    errorsMessages: Array<FieldError>;
 }
 

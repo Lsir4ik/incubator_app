@@ -15,7 +15,7 @@ app.use(express.json()); // body и query в реквестах
 
 // Routes
 app.get("/", (req: Request, res: Response) => {
-    res.status(HttpStatusCodes.No_Content_204).send("6th hometask already!")
+    res.status(HttpStatusCodes.No_Content_204).send("7th hometask already!")
 })
 app.use(routerPaths.testing,testingRouter);
 app.use(routerPaths.common, authRouter);

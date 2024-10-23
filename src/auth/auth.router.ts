@@ -1,5 +1,5 @@
 import {Request, Response, Router} from "express";
-import {RequestWithBody, RequestWithQuery} from "../common/types/requests";
+import {RequestWithBody} from "../common/types/requests";
 import {LoginInputModel} from "./types/LoginInputModel";
 import {
     authValidation,

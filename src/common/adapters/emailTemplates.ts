@@ -1,5 +1,3 @@
-// EMAIL_PASSWORD=IncubatorTest123
-// EMAIL=incubatorslazarev@gmail.com
 export const emailTemplates = {
     registrationTemplate(code:string) {
         return `<h1>Thanks for your registration</h1>

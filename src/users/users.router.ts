@@ -11,14 +11,10 @@ import {UserViewModel} from "./types/UserViewModel";
 import {usersQueryRepository} from "./user.query.repository";
 import {IdType} from "../common/types/id";
 import {APIErrorResult} from "../common/types/ErrorModels";
+import {ResultStatus} from "../common/types/result.type";
 
 export const userRouter = Router();
-//TODO куда убрать?
-const uniqueErr = {
-    errorMessages: [
-        {field: 'email or login', message: 'email and login should be unique'}
-    ]
-}
+
 userRouter.get('/', baseAuthGuard, async (req: RequestWithQuery<QueryUsersModel>, res: Response<PaginatorUserViewModel>) => {
     const foundUsers = await usersQueryRepository.findUsersPagination(
         req.query.sortBy,
@@ -31,9 +27,9 @@ userRouter.get('/', baseAuthGuard, async (req: RequestWithQuery<QueryUsersModel>
     res.status(HttpStatusCodes.OK_200).send(foundUsers)
 })
 userRouter.post('/', baseAuthGuard, createUserValidation, async (req:RequestWithBody<UserInputModel>, res: Response<UserViewModel | APIErrorResult>) => {
-    const createdUserId = await usersService.createUser(req.body)
-    if (!createdUserId) return res.status(HttpStatusCodes.Bad_Request_400).send(uniqueErr)
-    const foundUser = await usersQueryRepository.findUserById(createdUserId)
+    const createdUserResult = await usersService.createUser(req.body)
+    if (createdUserResult.status !== ResultStatus.Success) return res.status(HttpStatusCodes.Bad_Request_400).send(createdUserResult.formatError)
+    const foundUser = await usersQueryRepository.findUserById(createdUserResult.data as  string)
     return res.status(HttpStatusCodes.Created_201).send(foundUser!)
 
 })

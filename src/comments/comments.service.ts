@@ -4,7 +4,6 @@ import {CommentViewModel} from "./types/CommentViewModel";
 import {usersRepository} from "../users/users.repository";
 import {CommentatorInfo} from "./types/CommentatorInfo";
 import {CommentDBModel} from "./types/CommentDBModel";
-import {WithId} from "mongodb";
 
 
 export const commentsService = {
@@ -18,7 +17,7 @@ export const commentsService = {
         return userId === comment.commentatorInfo.userId
     },
     async createCommentForPost(postId: string, data: CommentInputModel, userId: string): Promise<string | null> {
-        const commentator = await usersRepository.findUserById(userId) //TODO разве юзера здесь может не быть?
+        const commentator = await usersRepository.findUserById(userId) // разве юзера здесь может не быть?
         if (!commentator) return null
 
         const commentatorInfo: CommentatorInfo = {
