@@ -22,7 +22,7 @@ export const postsService = {
         return postsRepository.updatePost(id, dataToUpdate)
     },
     async isPostExist(id: string): Promise<boolean> {
-         const foundPost = postsRepository.findPostById(id)
+         const foundPost = await postsRepository.findPostById(id)
          return !!foundPost
     },
     async deletePostById(id: string): Promise<boolean> {
