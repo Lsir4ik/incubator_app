@@ -19,7 +19,7 @@ export const authService = {
             data: false
         }
 
-        const isPassValid =  await bcryptService.checkPassword(loginData.password, foundUser.passwordHash)
+        const isPassValid = await bcryptService.checkPassword(loginData.password, foundUser.passwordHash)
         if (!isPassValid) return {
             status: ResultStatus.Unauthorized,
             errorMessage: 'Password incorrect',
@@ -46,13 +46,24 @@ export const authService = {
         const {login, email, password} = loginData
         // Check unique login or email
         const isLoginExist = await usersRepository.findUserByLoginOrEmail(login)
+        if (isLoginExist) {
+            return {
+                status: ResultStatus.BadRequest,
+                formatError: {
+                    errorsMessages: [{message: 'User with this login already exists', field: 'login'}]
+                },
+                data: false
+            }
+        }
         const isEmailExist = await usersRepository.findUserByLoginOrEmail(email)
-        if (isLoginExist || isEmailExist) return {
-            status: ResultStatus.BadRequest,
-            formatError: {
-                errorsMessages: [{message: 'User with this login data already exists', field: 'email'}]
-            },
-            data: false
+        if (isEmailExist) {
+            return {
+                status: ResultStatus.BadRequest,
+                formatError: {
+                    errorsMessages: [{message: 'User with this email already exists', field: 'email'}]
+                },
+                data: false
+            }
         }
         // create user entity and generate confirmationCode with uuidv4
         const passwordHash = await bcryptService.generateHash(password)
@@ -121,11 +132,11 @@ export const authService = {
         if (foundUser.emailConfirmation.isConfirmed) return {
             status: ResultStatus.BadRequest,
             formatError: {
-                errorsMessages: [{message: 'User already confirmed', field: 'code'}]
+                errorsMessages: [{message: 'Your email already confirmed', field: 'email'}]
             },
             data: false
         }
-        const newConfirmationCode  = v4()
+        const newConfirmationCode = v4()
         const updateCodeResult = await usersRepository.updateConfirmationCode(foundUser._id, newConfirmationCode)
         if (updateCodeResult) {
             emailManager.sendRegistrationConfirmationEmail(email, newConfirmationCode)
