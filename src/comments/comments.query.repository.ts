@@ -1,10 +1,9 @@
 import {PaginatorCommentViewModel} from "./types/PaginatorCommentViewModel";
 import {SortDirection} from "../common/types/sortDirections";
 import {db} from "../db";
-import {WithId} from "mongodb";
+import {ObjectId, WithId} from "mongodb";
 import {CommentDBModel} from "./types/CommentDBModel";
 import {CommentViewModel} from "./types/CommentViewModel";
-import {commentsRepository} from "./comments.repository";
 
 export const commentsQueryRepository = {
     _commentViewTypeMapping(comment: WithId<CommentDBModel>): CommentViewModel {
@@ -16,8 +15,11 @@ export const commentsQueryRepository = {
         }
     },
     async findCommentById (id: string): Promise<CommentViewModel | null> {
-        const foundComment = await commentsRepository.findCommentById(id)
-        return foundComment ? this._commentViewTypeMapping(foundComment) : null
+        if (!ObjectId.isValid(id)) return null
+        const foundComment = await db.getCollection().commentsCollection.findOne({_id: new ObjectId(id)})
+        return foundComment
+            ? this._commentViewTypeMapping(foundComment)
+            : null
     },
     async findCommentsOfPost(postId: string,
                              pageNumber?: string,

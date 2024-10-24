@@ -1,6 +1,6 @@
 import {BlogInputModel} from "../src/blogs/types/BlogInputModel";
 import {blogsTestManager} from "./utils/blogs.test.helpers";
-import request, {agent} from "supertest";
+import request from "supertest";
 import {app} from "../src/app";
 import {BlogPostInputModel} from "../src/blogs/types/BlogPostInputModel";
 import {routerPaths} from "../src/common/path/path";
@@ -34,7 +34,7 @@ describe('Blogs', () => {
             id: expect.any(String),
             name: 'testBlog',
             description: 'testBlogDescription',
-            webSiteUrl: 'http://testBlog.com',
+            websiteUrl: 'http://testBlog.com',
             createdAt: expect.any(String),
             isMembership: false,
         })
@@ -46,7 +46,7 @@ describe('Blogs', () => {
             id: expect.any(String),
             name: 'testBlog',
             description: 'testBlogDescription',
-            webSiteUrl: 'http://testBlog.com',
+            websiteUrl: 'http://testBlog.com',
             createdAt: expect.any(String),
             isMembership: false,
         })
@@ -56,7 +56,7 @@ describe('Blogs', () => {
         const updateBlogDto: BlogInputModel = testDtosCreator.createBlogDto({
             name: 'testBlog_upd',
             description: 'testBlog_upd_Description',
-            webSiteUrl: 'https://testBlog.upd.com',
+            websiteUrl: 'https://testBlog.upd.com',
         })
         // PUT
         const {status: updatedStatus} = await blogsTestManager.updateBlog(updateBlogDto, createdBlog.id)
@@ -69,7 +69,7 @@ describe('Blogs', () => {
             id: expect.any(String),
             name: 'testBlog_upd',
             description: 'testBlog_upd_Description',
-            webSiteUrl: 'https://testBlog.upd.com',
+            websiteUrl: 'https://testBlog.upd.com',
             createdAt: expect.any(String),
             isMembership: false,
         })
@@ -82,7 +82,7 @@ describe('Blogs', () => {
             id: expect.any(String),
             name: 'testBlog',
             description: 'testBlogDescription',
-            webSiteUrl: 'http://testBlog.com',
+            websiteUrl: 'http://testBlog.com',
             createdAt: expect.any(String),
             isMembership: false,
         })
@@ -164,7 +164,7 @@ describe('Blogs', () => {
                 id: expect.any(String),
                 name: 'testBlog1',
                 description: 'testBlog1Description',
-                webSiteUrl: 'http://testBlog1.com',
+                websiteUrl: 'http://testBlog1.com',
                 createdAt: expect.any(String),
                 isMembership: false
             }]
@@ -239,7 +239,7 @@ describe('Blogs', () => {
 
         // Incorrect webSiteUrl
         const dataToCreateOrUpdateBlog2: BlogInputModel = testDtosCreator.createBlogDto(
-            {webSiteUrl: 'http//localhost'})
+            {websiteUrl: 'http//localhost'})
         // POST
         await request(app)
             .post(routerPaths.blogs)
