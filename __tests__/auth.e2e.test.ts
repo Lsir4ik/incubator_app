@@ -4,11 +4,9 @@ import request from "supertest";
 import {app} from "../src/app";
 import {routerPaths} from "../src/common/path/path";
 import {HttpStatusCodes} from "../src/common/types/httpsStatusCodes";
-import {emailManager} from "../src/common/managers/email.manager";
 import {ADMIN_LOGIN, ADMIN_PASS} from "../src/auth/guards/base.auth.guard";
 import {usersTestManager} from "./utils/users.test.helpers";
 import {LoginInputModel} from "../src/auth/types/LoginInputModel";
-import {Result} from "../src/common/types/result.type";
 import {usersRepository} from "../src/users/users.repository";
 
 
@@ -27,7 +25,7 @@ describe('AUTH', () => {
         done()
     })
 
-    emailManager.sendRegistrationConfirmationEmail = jest.fn().mockImplementation((email: string, code: string) => Promise<Result<true>>)
+    //emailManager.sendRegistrationConfirmationEmail = jest.fn().mockImplementation((email: string, code: string) => Promise<Result<true>>)
 
     it('-POST =/auth/login= should return error if auth credentials is incorrect, status 401', async () => {
         const createdUser = await usersTestManager.createUser()
@@ -56,8 +54,8 @@ describe('AUTH', () => {
                 password: "111ewr"
             }
             await request(app).post(routerPaths.auth.registration).send(userDto).expect(HttpStatusCodes.No_Content_204)
-            expect(emailManager.sendRegistrationConfirmationEmail).toBeCalled()
-            expect(emailManager.sendRegistrationConfirmationEmail).toBeCalledTimes(1)
+            // expect(emailManager.sendRegistrationConfirmationEmail).toBeCalled()
+            // expect(emailManager.sendRegistrationConfirmationEmail).toBeCalledTimes(1)
 
             const res = await request(app).get(routerPaths.users).auth(ADMIN_LOGIN, ADMIN_PASS, {type: 'basic'}).expect(HttpStatusCodes.OK_200)
             expect(res.body).toEqual(

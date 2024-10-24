@@ -21,7 +21,7 @@ export const blogsTestManager = {
             .send({
             name: dto.name,
             description: dto.description,
-            webSiteUrl: dto.webSiteUrl,
+            websiteUrl: dto.websiteUrl,
         })
             .expect(HttpStatusCodes.Created_201)
         return res.body
@@ -35,7 +35,7 @@ export const blogsTestManager = {
                 .send({
                     name: 'testBlog' + i,
                     description: `testBlog${i}Description`,
-                    webSiteUrl: `http://testBlog${i}.com`,
+                    websiteUrl: `http://testBlog${i}.com`,
                 })
                 .expect(HttpStatusCodes.Created_201)
 

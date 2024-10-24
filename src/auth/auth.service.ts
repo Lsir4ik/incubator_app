@@ -8,6 +8,7 @@ import {Result, ResultStatus} from "../common/types/result.type";
 import {v4} from "uuid";
 import {emailManager} from "../common/managers/email.manager";
 import {add} from "date-fns"
+import {WithId} from "mongodb";
 
 export const authService = {
     async checkCredentials(loginData: LoginInputModel): Promise<Result<boolean | UserDbModel>> {
@@ -24,11 +25,11 @@ export const authService = {
             errorMessage: 'Password incorrect',
             data: false
         }
-        if(!foundUser.emailConfirmation.isConfirmed) return {
+        /*if(!foundUser.emailConfirmation.isConfirmed) return {
             status: ResultStatus.Unauthorized,
             errorMessage: 'Email was not confirmed',
             data: false
-        }
+        }*/
 
         return {
             status: ResultStatus.Success,
@@ -36,10 +37,10 @@ export const authService = {
         }
     },
     async loginUser(loginData: LoginInputModel): Promise<string | null> {
-        const user = await this.checkCredentials(loginData)
-        if (user.status !== ResultStatus.Success) return null
-        const userId = user.data as UserDbModel
-        return jwtService.createJWT(userId.toString())
+        const userRes = await this.checkCredentials(loginData)
+        if (userRes.status !== ResultStatus.Success) return null
+        const user = userRes.data as WithId<UserDbModel>
+        return jwtService.createJWT(user._id.toString())
     },
     async registerUser(loginData: UserInputModel): Promise<Result<boolean>> {
         const {login, email, password} = loginData
@@ -71,8 +72,8 @@ export const authService = {
         console.log(newUser.emailConfirmation.confirmationCode) // для тестирования
         // Give it to DB and send email
         const newUserId = await usersRepository.createUser(newUser)
-        await emailManager.sendRegistrationConfirmationEmail(newUser.email, newUser.emailConfirmation.confirmationCode)
-            // .catch((er) => console.error('error in send email:', er));
+        emailManager.sendRegistrationConfirmationEmail(newUser.email, newUser.emailConfirmation.confirmationCode)
+            .catch((er) => console.error('error in send email:', er));
         return {
             status: ResultStatus.Success,
             data: true

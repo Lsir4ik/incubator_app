@@ -15,11 +15,11 @@ export const testDtosCreator = {
     },
 
     // ---BLOGS---
-    createBlogDto({name, description, webSiteUrl}: {name?: string, description?: string, webSiteUrl?: string}): BlogInputModel {
+    createBlogDto({name, description, websiteUrl}: {name?: string, description?: string, websiteUrl?: string}): BlogInputModel {
         return {
             name: name ?? 'testBlog',
             description: description ?? 'testBlogDescription',
-            websiteUrl: webSiteUrl ?? 'http://testBlog.com',
+            websiteUrl: websiteUrl ?? 'http://testBlog.com',
         }
     },
     createBlogPostDto({title, shortDescription, content}: {title?: string, shortDescription?: string, content?: string}): BlogPostInputModel {
