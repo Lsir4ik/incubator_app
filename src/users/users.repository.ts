@@ -1,7 +1,7 @@
 import {db} from "../db";
 import {UserDbModel} from "./types/UserDbModel";
 import {ObjectId, WithId} from "mongodb";
-import {UserEmailConfirmation} from "./domain/user.emailConfirmation.entity";
+import {UserEmailConfirmation} from "./domain/user.emailConfirmation.model";
 
 export const usersRepository = {
     async createUser(newUser: UserDbModel): Promise<string> {

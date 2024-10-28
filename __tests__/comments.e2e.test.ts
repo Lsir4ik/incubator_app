@@ -32,7 +32,7 @@ describe('Comments', () => {
 
         const createdCommentRes = await request(app)
             .post(`${routerPaths.posts}/${createdPost.id}/comments`)
-            .auth(token.accessToken, {type: 'bearer'})
+            .auth(token.accessToken, {type: 'jwt.bearer'})
             .send(commentDto)
             .expect(HttpStatusCodes.Created_201)
         expect(createdCommentRes.body).toEqual({
@@ -80,7 +80,7 @@ describe('Comments', () => {
 
         const res = await request(app)
             .put(`${routerPaths.comments}/${createdComment.id}`)
-            .auth(token.accessToken, {type: 'bearer'})
+            .auth(token.accessToken, {type: 'jwt.bearer'})
             .send(commentDto)
             .expect(HttpStatusCodes.No_Content_204)
 
@@ -101,11 +101,11 @@ describe('Comments', () => {
         const commentDto = testDtosCreator.createCommentDto({content: 'some test_UPD content has 20 symbols at least'})
         const randomObjectId = new ObjectId().toString()
         await request(app).delete(`${routerPaths.comments}/${randomObjectId}`)
-            .auth(token.accessToken, {type: 'bearer'})
+            .auth(token.accessToken, {type: 'jwt.bearer'})
             .expect(HttpStatusCodes.Not_Found_404)
 
         await request(app).put(`${routerPaths.comments}/${randomObjectId}`)
-            .auth(token.accessToken, {type: 'bearer'})
+            .auth(token.accessToken, {type: 'jwt.bearer'})
             .send(commentDto)
             .expect(HttpStatusCodes.Not_Found_404)
     })
@@ -142,12 +142,12 @@ describe('Comments', () => {
 
         // DELETE with 403 error
         await request(app).delete(`${routerPaths.comments}/${createdComment.id}`)
-            .auth(token2.accessToken, {type: 'bearer'})
+            .auth(token2.accessToken, {type: 'jwt.bearer'})
             .expect(HttpStatusCodes.Forbidden_403)
 
         // Update with 403 error
         await request(app).put(`${routerPaths.comments}/${createdComment.id}`)
-            .auth(token2.accessToken, {type: 'bearer'})
+            .auth(token2.accessToken, {type: 'jwt.bearer'})
             .send(commentDto)
             .expect(HttpStatusCodes.Forbidden_403)
     })
@@ -165,7 +165,7 @@ describe('Comments', () => {
         const commentDto = testDtosCreator.createCommentDto({content: 'less than 20'})
         await request(app)
             .post(`${routerPaths.posts}/${createdPost.id}/comments`)
-            .auth(token.accessToken, {type: 'bearer'})
+            .auth(token.accessToken, {type: 'jwt.bearer'})
             .send(commentDto.content)
             .expect(HttpStatusCodes.Bad_Request_400)
     })
@@ -175,7 +175,7 @@ describe('Comments', () => {
         const createdComment = await commentTestManager.createComment(createdPost.id,token.accessToken)
 
         await request(app).put(`${routerPaths.comments}/${createdComment.id}`)
-            .auth(token.accessToken, {type: 'bearer'})
+            .auth(token.accessToken, {type: 'jwt.bearer'})
             .send(commentDto)
             .expect(HttpStatusCodes.Bad_Request_400)
     })

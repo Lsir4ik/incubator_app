@@ -9,6 +9,9 @@ import {v4} from "uuid";
 import {emailManager} from "../common/managers/email.manager";
 import {add} from "date-fns"
 import {WithId} from "mongodb";
+import {TokensModel} from "./types/TokensModel";
+import {refreshTokenRepository} from "./guards/jwt.bearer/refreshToken.repository";
+import {RefreshTokenDbModel} from "./guards/jwt.bearer/types/refreshTokenDbModel";
 
 export const authService = {
     async checkCredentials(loginData: LoginInputModel): Promise<Result<boolean | UserDbModel>> {
@@ -36,11 +39,22 @@ export const authService = {
             data: foundUser
         }
     },
-    async loginUser(loginData: LoginInputModel): Promise<string | null> {
+    async loginUser(loginData: LoginInputModel): Promise<TokensModel | null> {
         const userRes = await this.checkCredentials(loginData)
         if (userRes.status !== ResultStatus.Success) return null
         const user = userRes.data as WithId<UserDbModel>
-        return jwtService.createJWT(user._id.toString())
+        const accessToken = await jwtService.createAccessToken(user._id.toString())
+        const refreshToken = await jwtService.createRefreshToken(user._id.toString())
+        const refreshDbToken: RefreshTokenDbModel = {
+            userId: user._id.toString(),
+            validRefreshToken: refreshToken,
+
+        }
+        await refreshTokenRepository.saveToken({
+
+        })
+
+        return {accessToken, refreshToken}
     },
     async registerUser(loginData: UserInputModel): Promise<Result<boolean>> {
         const {login, email, password} = loginData

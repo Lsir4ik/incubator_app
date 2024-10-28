@@ -1,5 +1,5 @@
 import {Router, Response} from "express";
-import {authBearerGuard} from "../auth/guards/access.token.guard";
+import {authBearerGuard} from "../auth/guards/jwt.bearer/bearer.auth.guard";
 import {updateCommentValidator} from "./middlewares/comments.validation.middleware";
 import {RequestWithParams, RequestWithParamsAndBody} from "../common/types/requests";
 import {IdType} from "../common/types/id";

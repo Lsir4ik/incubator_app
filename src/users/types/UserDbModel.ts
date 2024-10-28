@@ -1,4 +1,4 @@
-import {UserEmailConfirmation} from "../domain/user.emailConfirmation.entity";
+import {UserEmailConfirmation} from "../domain/user.emailConfirmation.model";
 
 export type UserDbModel = {
     login: string

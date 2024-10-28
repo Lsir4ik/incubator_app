@@ -8,7 +8,7 @@ import {
     resendingEmailValidation
 } from "./middlewares/auth.validation.middleware";
 import {HttpStatusCodes} from "../common/types/httpsStatusCodes";
-import {authBearerGuard} from "./guards/access.token.guard";
+import {authBearerGuard} from "./guards/jwt.bearer/bearer.auth.guard";
 import {LoginSuccessViewModel} from "./types/LoginSuccessViewModel";
 import {authService} from "./auth.service";
 import {routerPaths} from "../common/path/path";
@@ -21,9 +21,14 @@ import {RegistrationEmailResending} from "./types/RegistrationEmailResending";
 export const authRouter = Router()
 
 authRouter.post(routerPaths.auth.login, authValidation, async (req: RequestWithBody<LoginInputModel>, res: Response<LoginSuccessViewModel>) => {
-    const accessToken = await authService.loginUser(req.body)
-    if (!accessToken) return res.sendStatus(HttpStatusCodes.Unauthorized_401)
+    const loginResult = await authService.loginUser(req.body)
+    if (!loginResult) return res.sendStatus(HttpStatusCodes.Unauthorized_401)
+    const {accessToken, refreshToken} = loginResult
+    res.cookie('refreshToken', refreshToken, {httpOnly: true,secure: true})
     return res.status(HttpStatusCodes.OK_200).send({accessToken})
+})
+authRouter.post(routerPaths.auth.refreshToken, async (req: Request, res: Response) => {
+    const refreshToken = req.cookies.refreshToken
 })
 authRouter.post(routerPaths.auth.registrationConfirmation, registrationConfirmationValidation, async (req: RequestWithBody<RegistrationConfirmationCodeModel>,res: Response) => {
     const confirmResult = await authService.confirmRegistration(req.body.code)
