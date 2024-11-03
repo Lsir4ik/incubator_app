@@ -33,7 +33,7 @@ export const commentTestManager = {
     async createComment(postId: string, token: string, commentDto?: CommentInputModel) {
         // return request(app).post(routerPaths.posts).set({'Authorization': 'Basic ' + codeAuth}).send(data)
         const dto = commentDto ?? testDtosCreator.createCommentDto({})
-        const res = await request(app).post(`${routerPaths.posts}/${postId}/comments`).auth(token, {type: 'jwt.bearer'}).send({
+        const res = await request(app).post(`${routerPaths.posts}/${postId}/comments`).auth(token, {type: 'bearer'}).send({
             content: dto.content,
         })
             .expect(HttpStatusCodes.Created_201)
@@ -44,7 +44,7 @@ export const commentTestManager = {
         for (let i = 1; i <= count; i++) {
             const res = await request(app)
                 .post(`${routerPaths.posts}/${postId}/comments`)
-                .auth(token.accessToken, {type: 'jwt.bearer'})
+                .auth(token.accessToken, {type: 'bearer'})
                 .send({
                     content: `some test ${i} content has 20 symbols at least`
                 })

@@ -13,6 +13,8 @@ export const jwtService = {
             return null
         }
     },
+
+    // Да, одинаково, но могло бы быть иначе, поэтому пусть :)
     async createRefreshToken(userId: string): Promise<string> {
         return jwt.sign({userId}, appConfig.JWT_SECRET, {expiresIn: appConfig.JWT_REFRESH_EXPIRATION})
     },

@@ -3,7 +3,7 @@ import {appConfig} from "./common/config/config";
 import {BlogDbModel} from "./blogs/types/BlogDbModel";
 import {PostDbModel} from "./posts/types/PostDbModel";
 import {UserDbModel} from "./users/types/UserDbModel";
-import {RefreshTokenDbModel} from "./auth/guards/jwt.bearer/types/refreshTokenDbModel";
+import {RefreshTokenDbModel} from "./auth/guards/bearer/types/refreshTokenDbModel";
 import {CommentDBModel} from "./comments/types/CommentDBModel";
 
 

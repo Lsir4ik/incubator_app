@@ -10,9 +10,9 @@ import {emailManager} from "../common/managers/email.manager";
 import {add} from "date-fns"
 import {WithId} from "mongodb";
 import {TokensModel} from "./types/TokensModel";
-import {refreshTokenRepository} from "./guards/jwt.bearer/refreshToken.repository";
-import {RefreshTokenDbModel} from "./guards/jwt.bearer/types/refreshTokenDbModel";
+import {refreshTokenRepository} from "./guards/bearer/refreshToken.repository";
 
+// TODO проверка на логин
 export const authService = {
     async checkCredentials(loginData: LoginInputModel): Promise<Result<boolean | UserDbModel>> {
         const foundUser = await usersRepository.findUserByLoginOrEmail(loginData.loginOrEmail)
@@ -39,21 +39,13 @@ export const authService = {
             data: foundUser
         }
     },
-    async loginUser(loginData: LoginInputModel): Promise<TokensModel | null> {
+    async logInUser(loginData: LoginInputModel): Promise<TokensModel | null> {
         const userRes = await this.checkCredentials(loginData)
         if (userRes.status !== ResultStatus.Success) return null
         const user = userRes.data as WithId<UserDbModel>
         const accessToken = await jwtService.createAccessToken(user._id.toString())
         const refreshToken = await jwtService.createRefreshToken(user._id.toString())
-        const refreshDbToken: RefreshTokenDbModel = {
-            userId: user._id.toString(),
-            validRefreshToken: refreshToken,
-
-        }
-        await refreshTokenRepository.saveToken({
-
-        })
-
+        await refreshTokenRepository.saveToken({token: refreshToken, isValid: true})
         return {accessToken, refreshToken}
     },
     async registerUser(loginData: UserInputModel): Promise<Result<boolean>> {
@@ -162,6 +154,57 @@ export const authService = {
                 data: false
             }
         }
+        return {
+            status: ResultStatus.Success,
+            data: true
+        }
+    },
+    async refreshJwtTokens(refreshToken: string): Promise<Result<TokensModel | boolean>> {
+        const foundToken = await refreshTokenRepository.findToken(refreshToken)
+        if (!foundToken) return {
+            status: ResultStatus.Unauthorized,
+            errorMessage: 'Refresh token does not exist',
+            data: false
+        }
+        if (!foundToken.isValid) return {
+            status: ResultStatus.Unauthorized,
+            errorMessage: 'Refresh token not valid',
+            data: false
+        }
+        const verifyResult =  await jwtService.verifyRefreshToken(refreshToken)
+        if (!verifyResult) return {
+            status: ResultStatus.Unauthorized,
+            errorMessage: 'Refresh token expired',
+            data: false
+        }
+        await refreshTokenRepository.addToBlackList(refreshToken)
+        const newAccessToken = await jwtService.createAccessToken(verifyResult.userId)
+        const newRefreshToken = await jwtService.createRefreshToken(verifyResult.userId)
+        await refreshTokenRepository.saveToken({token: newRefreshToken, isValid: true})
+        return {
+            status: ResultStatus.Success,
+            data: {accessToken: newAccessToken, refreshToken: newRefreshToken}
+        }
+    },
+    async logOutUser(refreshToken: string): Promise<Result<boolean>> {
+        const foundToken = await refreshTokenRepository.findToken(refreshToken)
+        if (!foundToken) return {
+            status: ResultStatus.Unauthorized,
+            errorMessage: 'Refresh token does not exist',
+            data: false
+        }
+        if (!foundToken.isValid) return {
+            status: ResultStatus.Unauthorized,
+            errorMessage: 'Refresh token not valid',
+            data: false
+        }
+        const verifyResult =  await jwtService.verifyRefreshToken(refreshToken)
+        if (!verifyResult) return {
+            status: ResultStatus.Unauthorized,
+            errorMessage: 'Refresh token expired',
+            data: false
+        }
+        await refreshTokenRepository.addToBlackList(refreshToken)
         return {
             status: ResultStatus.Success,
             data: true

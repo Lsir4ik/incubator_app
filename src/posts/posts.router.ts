@@ -16,7 +16,7 @@ import {SearchQueryPostsModel} from "./types/SearchQueryPostsModel";
 import {HttpStatusCodes} from "../common/types/httpsStatusCodes";
 import {postsQueryRepository} from "./posts.query.repository";
 import {IdType} from "../common/types/id";
-import {authBearerGuard} from "../auth/guards/jwt.bearer/bearer.auth.guard";
+import {authBearerGuard} from "../auth/guards/bearer/bearer.auth.guard";
 import {createCommentValidation} from "../comments/middlewares/comments.validation.middleware";
 import {CommentInputModel} from "../comments/types/CommentInputModel";
 import {PaginatorCommentViewModel} from "../comments/types/PaginatorCommentViewModel";
