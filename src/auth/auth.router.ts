@@ -57,7 +57,7 @@ authRouter.post(routerPaths.auth.logout, async (req: Request, res: Response) => 
     return res.sendStatus(HttpStatusCodes.No_Content_204)
 })
 authRouter.get(routerPaths.auth.me, authBearerGuard, async (req: Request, res: Response<MeViewModel>) => {
-    const me: MeViewModel | null = await usersQueryRepository.findMeById(req.user!.id)
+    const me = await usersQueryRepository.findMeById(req.user!.id)
     if (!me) return res.sendStatus(HttpStatusCodes.Unauthorized_401)
     return res.status(HttpStatusCodes.OK_200).send(me)
 })

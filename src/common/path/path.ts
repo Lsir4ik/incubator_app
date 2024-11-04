@@ -3,7 +3,7 @@ export const routerPaths = {
     users: '/users',
     auth: {
         login: '/auth/login',
-        me: '/api/auth/me',
+        me: '/auth/me',
         registrationConfirmation: '/auth/registration-confirmation',
         registration: '/auth/registration',
         registrationEmailResending: '/auth/registration-email-resending',
