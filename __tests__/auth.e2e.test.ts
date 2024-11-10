@@ -9,7 +9,9 @@ import {usersTestManager} from "./utils/users.test.helpers";
 import {LoginInputModel} from "../src/auth/types/LoginInputModel";
 import {usersRepository} from "../src/users/users.repository";
 
-
+// const cookie = result.headers['set-cookie'];
+//         console.log(cookie)
+//         expect(cookie).toBeDefined()
 describe('AUTH', () => {
     beforeAll(async () => {
         const mongoServer = await MongoMemoryServer.create()
