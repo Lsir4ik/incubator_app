@@ -5,6 +5,7 @@ import {PostDbModel} from "./posts/types/PostDbModel";
 import {UserDbModel} from "./users/types/UserDbModel";
 import {RefreshTokenDbModel} from "./auth/guards/bearer/types/refreshTokenDbModel";
 import {CommentDBModel} from "./comments/types/CommentDBModel";
+import {ApiRequest} from "./securiryDevices/types/ApiReqControlModel";
 
 
 export const db = {
@@ -48,6 +49,8 @@ export const db = {
             usersCollection: this.getDbName().collection<UserDbModel>('users'),
             commentsCollection: this.getDbName().collection<CommentDBModel>('comments'),
             refreshTokensCollection: this.getDbName().collection<RefreshTokenDbModel>('refreshTokens'),
+            apiRequestControlCollection: this.getDbName().collection<ApiRequest>('apiRequestControl' +
+                ''),
         }
     }
 }
